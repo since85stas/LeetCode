@@ -7,7 +7,7 @@ class FunctionValue {
     public static void main(String[] args) throws IOException {
 //        StringBuilder output_buffer = new StringBuilder();
 //        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
+        BufferedReader reader = new BufferedReader(new FileReader(new File("input.txt")));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
         double a = Double.parseDouble(tokenizer.nextToken());
         double x = Double.parseDouble(tokenizer.nextToken());
