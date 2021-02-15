@@ -13,6 +13,8 @@ public class NearestNull3 {
      * встречается первый ноль, для них берется только обратный проход.
      *
      * Сложность алгоритма O(n)
+     *
+     * успешная посылка https://contest.yandex.ru/contest/22450/run-report/48083169/
      */
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
