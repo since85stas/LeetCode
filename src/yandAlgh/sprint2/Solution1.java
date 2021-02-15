@@ -2,7 +2,18 @@ package yandAlgh.sprint2;
 
 public class Solution1 {
 
-
+    public static int solution(Node<String> head, String elem) {
+        int count = 0;
+        while (head != null) {
+            if (head.value.equals(elem)) {
+                return count;
+            } else {
+                head = head.next;
+                count++;
+            }
+        }
+        return -1;
+    }
 
 
     /**

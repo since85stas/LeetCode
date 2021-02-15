@@ -1,0 +1,80 @@
+package yandAlgh.sprint2;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
+public class StackMy {
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
+
+        StackMy stackMy = new StackMy();
+
+        StringTokenizer tokenizerStr = new StringTokenizer(reader.readLine());
+        int n = Integer.parseInt(tokenizerStr.nextToken());
+
+        for (int i = 0; i < n; i++) {
+            tokenizerStr = new StringTokenizer(reader.readLine());
+
+            String command = tokenizerStr.nextToken();
+            if (command.equals("get_max")) {
+                System.out.println(stackMy.getMax());
+            } else if (command.equals("pop")) {
+                stackMy.pop();
+            } else if (command.equals("push")) {
+                long num = Long.parseLong(tokenizerStr.nextToken());
+                stackMy.push(num);
+            }
+        }
+    }
+
+    private Stack<Long> stack = new Stack<>();
+
+    public StackMy() {
+
+    }
+
+    void push(long val) {
+        stack.push(val);
+//        if (max == null) {
+//            max = val;
+//        } else {
+//            if (val > max) {
+//                max = val;
+//            }
+//        }
+    }
+
+    void pop() {
+        if (stack.empty()) {
+            System.out.println( "Error");
+        } else {
+            long val = stack.pop();
+        }
+    }
+
+    String getMax() {
+//        if (max != null) {
+//            return max.toString();
+//        } else {
+//            return "None";
+//        }
+        if (stack.empty()) {
+            return "None";
+        } else {
+            long max = Long.MIN_VALUE;
+            for (long num:
+                 stack) {
+                if (num > max) {
+                    max = num;
+                }
+            }
+            return String.valueOf(max);
+        }
+    }
+
+}

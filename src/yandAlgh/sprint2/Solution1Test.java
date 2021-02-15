@@ -9,7 +9,7 @@ class Solution1Test {
     @Test
     void solution() {
 
-        String[] arr = new String[] {"a", "b"};
+        String[] arr = new String[] {"a", "b","c"};
 
         Solution1.Node<String> head = new Solution1.Node<String>(arr[0], null);
         Solution1.Node<String> init = head;
@@ -18,7 +18,7 @@ class Solution1Test {
             head = head.next;
         }
 
-        Solution1.Node<String> res = Solution1.solution(init,2);
+        int res = Solution1.solution(init,"dfdfa");
         System.out.println("");
     }
 }
