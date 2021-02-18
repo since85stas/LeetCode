@@ -1,14 +1,14 @@
 package yandAlgh.sprint2;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class StackMy {
+public class StackEff {
 
-    static private Stack<Long> stack = new Stack<>();
+    static private Stack<Integer> stack = new Stack<>();
+
+    static int max = Integer.MIN_VALUE;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
@@ -25,22 +25,28 @@ public class StackMy {
             } else if (command.equals("pop")) {
                 pop();
             } else if (command.equals("push")) {
-                long num = Long.parseLong(tokenizerStr.nextToken());
+                int num = Integer.parseInt(tokenizerStr.nextToken());
                 push(num);
             }
         }
     }
 
 
-    static void push(long val) {
+    static void push(int val) {
         stack.push(val);
+        if (val > max) {
+            max = val;
+        }
     }
 
     static void pop() {
         if (stack.empty()) {
             System.out.println( "error");
         } else {
-            long val = stack.pop();
+            int val = stack.pop();
+            if (val == max) {
+                max = val;
+            }
         }
     }
 
@@ -48,13 +54,6 @@ public class StackMy {
         if (stack.empty()) {
             return "None";
         } else {
-            long max = Long.MIN_VALUE;
-            for (long num:
-                 stack) {
-                if (num > max) {
-                    max = num;
-                }
-            }
             return String.valueOf(max);
         }
     }
