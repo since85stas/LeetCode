@@ -18,27 +18,27 @@ public class StackMy {
         int n = Integer.parseInt(tokenizerStr.nextToken());
 
         for (int i = 0; i < n; i++) {
-            tokenizerStr = new StringTokenizer(reader.readLine());
+            StringTokenizer tokenizerStrC = new StringTokenizer(reader.readLine());
 
-            String command = tokenizerStr.nextToken();
+            String command = tokenizerStrC.nextToken();
             if (command.equals("get_max")) {
                 System.out.println(stackMy.getMax());
             } else if (command.equals("pop")) {
                 stackMy.pop();
             } else if (command.equals("push")) {
-                long num = Long.parseLong(tokenizerStr.nextToken());
+                int num = Integer.parseInt(tokenizerStrC.nextToken());
                 stackMy.push(num);
             }
         }
     }
 
-    private Stack<Long> stack = new Stack<>();
+    private Stack<Integer> stack = new Stack<>();
 
     public StackMy() {
 
     }
 
-    void push(long val) {
+    void push(int val) {
         stack.push(val);
 //        if (max == null) {
 //            max = val;
@@ -66,8 +66,8 @@ public class StackMy {
         if (stack.empty()) {
             return "None";
         } else {
-            long max = Long.MIN_VALUE;
-            for (long num:
+            int max = Integer.MIN_VALUE;
+            for (int num:
                  stack) {
                 if (num > max) {
                     max = num;
