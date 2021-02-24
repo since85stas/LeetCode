@@ -1,20 +1,7 @@
-16
-push 3
-get_max
-push 5
-get_max
-pop
-get_max
-push 2
-get_max
-pop
-push -2
-push -6
-pop
-pop
-pop
-pop
-get_max
+10 1
+
+
+
 
 
 
