@@ -12,11 +12,12 @@ class Player {
 
     static List<Snaffle> snaffles;
     static List<Wizard> myTeam;
+    static EnemGoal enemGoal;
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         int myTeamId = in.nextInt(); // if 0 you need to score on the right of the map, if 1 you need to score on the left
-
+        enemGoal = new EnemGoal(myTeamId);
         // game loop
         while (true) {
             snaffles = new ArrayList<>();
@@ -50,11 +51,17 @@ class Player {
 
                 // Write an action using System.out.println()
                 // To debug: System.err.println("Debug messages...");
-                Entity nearShaff = myTeam.get(i).getNearestSnaff();
+                Wizard curWiz = myTeam.get(i);
+                if (curWiz.state == 0) {
+                    Entity nearShaff = curWiz.getNearestSnaff();
 
-                // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
-                // i.e.: "MOVE x y thrust" or "THROW x y power"
-                System.out.println("MOVE "+ nearShaff.x + " " + nearShaff.y + " " + "100 " + myTeam.get(i).id + " " + myTeam.get(i).x);
+                    // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
+                    // i.e.: "MOVE x y thrust" or "THROW x y power"
+                    System.out.println("MOVE " + nearShaff.x + " " + nearShaff.y + " " + "150 " + curWiz.id);
+                } else if (curWiz.state == 1) {
+                    System.err.println("Wiz:" + curWiz.id + " has a ball");
+                    System.out.println("THROW " + enemGoal.center.x + " " + enemGoal.center.y + " " + "500 " + curWiz.id);
+                }
             }
         }
     }
@@ -108,6 +115,36 @@ class Player {
 
         public Snaffle(int x, int y, int vx, int vy) {
             super(x,y,vx,vy);
+        }
+    }
+
+    static class EnemGoal {
+        Entity top;
+        Entity down;
+        Entity center;
+
+        public EnemGoal(int id) {
+            if (id == 0) {
+                center = new Entity(16000, 3750, 0, 0);
+                top = new Entity(center.x, center.y - 2000, 0, 0);
+                down = new Entity(center.x, center.y + 2000, 0, 0);
+            } else {
+                center = new Entity(0, 3750,0 ,0);
+                top = new Entity(center.x, center.y - 2000, 0 ,0);
+                down = new Entity(center.x, center.y + 2000, 0 ,0);
+            }
+        }
+    }
+
+    static class LeftGoal {
+        Entity top;
+        Entity down;
+        Entity center;
+
+        public LeftGoal() {
+            center = new Entity(0, 3750,0 ,0);
+            top = new Entity(center.x, center.y - 2000, 0 ,0);
+            down = new Entity(center.x, center.y + 2000, 0 ,0);
         }
     }
 }
