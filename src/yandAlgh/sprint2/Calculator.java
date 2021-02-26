@@ -4,6 +4,13 @@ import java.io.*;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+/**
+ * Складываем комманды стек так как для правильной работы необходимо выполнять с конца
+ *
+ * сложность операций O(n)
+ *
+ * успешня посылка https://contest.yandex.ru/contest/22781/run-report/48791249/
+ */
 public class Calculator {
 
     public static void main(String[] args) throws IOException {
@@ -11,6 +18,7 @@ public class Calculator {
 
         StringTokenizer tokenizerStr = new StringTokenizer(reader.readLine());
 
+        // стек для хранения комманд
         Stack<Integer> stack = new Stack<>();
 
         while (tokenizerStr.hasMoreTokens()) {
@@ -43,7 +51,6 @@ public class Calculator {
             } else {
                 stack.add(Integer.parseInt(elem));
             }
-//            System.out.println(elem);
         }
 
         System.out.println(stack.pop());

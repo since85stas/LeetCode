@@ -12,7 +12,11 @@ class Player {
 
     static List<Snaffle> snaffles;
     static List<Wizard> myTeam;
+    static List<Wizard> enemyTeam;
     static EnemGoal enemGoal;
+    static List<Bludger> bludgers;
+
+    static int magic;
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
@@ -22,6 +26,8 @@ class Player {
         while (true) {
             snaffles = new ArrayList<>();
             myTeam =  new ArrayList<>();
+            enemyTeam =  new ArrayList<>();
+            bludgers = new ArrayList<>();
 
             int myScore = in.nextInt();
             int myMagic = in.nextInt();
@@ -42,11 +48,20 @@ class Player {
                     myTeam.add(wizard);
                     wizCount++;
                 } else if (entityType.equals("SNAFFLE")) {
-                    Snaffle snaffle = new Snaffle(x,y,vx,vy);
+                    Snaffle snaffle = new Snaffle(entityId,x,y,vx,vy);
                     snaffles.add(snaffle);
+                } else if (entityType.equals("OPPONENT_WIZARD")) {
+                    Wizard wizard = new Wizard(wizCount,state,x,y,vx,vy);
+                    enemyTeam.add(wizard);
+                    wizCount++;
+                } else if (entityType.equals("BLUDGER")) {
+                    Bludger bludger = new Bludger(entityId,x,y,vx,vy);
+                    bludgers.add(bludger);
                 }
 
             }
+
+            int lastSnaffId  = -1;
             for (int i = 0; i < 2; i++) {
 
                 // Write an action using System.out.println()
@@ -54,6 +69,12 @@ class Player {
                 Wizard curWiz = myTeam.get(i);
                 if (curWiz.state == 0) {
                     Entity nearShaff = curWiz.getNearestSnaff();
+                    if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
+                        int finalLastSnaffId = lastSnaffId;
+                        snaffles.removeIf(it -> it.id == finalLastSnaffId);
+                        nearShaff = curWiz.getNearestSnaff();
+                    }
+                    lastSnaffId = nearShaff.id;
 
                     // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
                     // i.e.: "MOVE x y thrust" or "THROW x y power"
@@ -63,16 +84,20 @@ class Player {
                     System.out.println("THROW " + enemGoal.center.x + " " + enemGoal.center.y + " " + "500 " + curWiz.id);
                 }
             }
+
+            magic++;
         }
     }
 
     static class Entity {
+        int id;
         int x;
         int y;
         int vx;
         int vy;
 
-        public Entity(int x, int y, int vx, int vy) {
+        public Entity(int id, int x, int y, int vx, int vy) {
+            this.id = id;
             this.x = x;
             this.y = y;
             this.vx = vx;
@@ -91,7 +116,7 @@ class Player {
         int state;
 
         public Wizard(int id, int state,int x, int y, int vx, int vy) {
-            super(x,y,vx,vy);
+            super(id,x,y,vx,vy);
             this.id = id;
             this.state = state;
         }
@@ -113,8 +138,14 @@ class Player {
 
     static class Snaffle extends Entity{
 
-        public Snaffle(int x, int y, int vx, int vy) {
-            super(x,y,vx,vy);
+        public Snaffle(int id, int x, int y, int vx, int vy) {
+            super(id,x,y,vx,vy);
+        }
+    }
+
+    static class Bludger extends Entity {
+        public Bludger(int id, int x, int y, int vx, int vy) {
+            super(id,x,y,vx,vy);
         }
     }
 
@@ -125,26 +156,15 @@ class Player {
 
         public EnemGoal(int id) {
             if (id == 0) {
-                center = new Entity(16000, 3750, 0, 0);
-                top = new Entity(center.x, center.y - 2000, 0, 0);
-                down = new Entity(center.x, center.y + 2000, 0, 0);
+                center = new Entity(-1,16000, 3750, 0, 0);
+                top = new Entity(-1,center.x, center.y - 2000, 0, 0);
+                down = new Entity(-1,center.x, center.y + 2000, 0, 0);
             } else {
-                center = new Entity(0, 3750,0 ,0);
-                top = new Entity(center.x, center.y - 2000, 0 ,0);
-                down = new Entity(center.x, center.y + 2000, 0 ,0);
+                center = new Entity(-1, 0, 3750,0 ,0);
+                top = new Entity(-1, center.x, center.y - 2000, 0 ,0);
+                down = new Entity(-1, center.x, center.y + 2000, 0 ,0);
             }
         }
     }
 
-    static class LeftGoal {
-        Entity top;
-        Entity down;
-        Entity center;
-
-        public LeftGoal() {
-            center = new Entity(0, 3750,0 ,0);
-            top = new Entity(center.x, center.y - 2000, 0 ,0);
-            down = new Entity(center.x, center.y + 2000, 0 ,0);
-        }
-    }
 }
