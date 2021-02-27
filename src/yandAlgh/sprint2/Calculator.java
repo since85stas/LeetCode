@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
  *
  * сложность операций O(n)
  *
- * успешня посылка https://contest.yandex.ru/contest/22781/run-report/48791249/
+ * успешня посылка https://contest.yandex.ru/contest/22781/run-report/48894050/
  */
 public class Calculator {
 
@@ -28,28 +28,28 @@ public class Calculator {
                 int num2 = stack.pop();
 
                 int sum = num1 + num2;
-                stack.add(sum);
+                stack.push(sum);
             } else if (elem.equals("-")) {
                 int num1 = stack.pop();
                 int num2 = stack.pop();
 
                 int minus = num2 - num1;
-                stack.add(minus);
+                stack.push(minus);
             } else if (elem.equals("*")) {
                 int num1 = stack.pop();
                 int num2 = stack.pop();
 
                 int mult = num1 * num2;
-                stack.add(mult);
+                stack.push(mult);
             } else if (elem.equals("/")) {
                 int num1 = stack.pop();
                 int num2 = stack.pop();
 
                 double del = (float) num2 / (float) num1;
                 double res = Math.floor(del);
-                stack.add((int) res);
+                stack.push((int) res);
             } else {
-                stack.add(Integer.parseInt(elem));
+                stack.push(Integer.parseInt(elem));
             }
         }
 

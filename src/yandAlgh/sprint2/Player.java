@@ -1,8 +1,11 @@
 package yandAlgh.sprint2;
 
 import java.util.*;
-import java.io.*;
-import java.math.*;
+
+enum States {
+    ATTACKING, BLUDGING, MAGICFULL
+
+}
 
 /**
  * Grab Snaffles and try to throw them through the opponent's goal!
@@ -13,7 +16,8 @@ class Player {
     static List<Snaffle> snaffles;
     static List<Wizard> myTeam;
     static List<Wizard> enemyTeam;
-    static EnemGoal enemGoal;
+    static Goal enemyGoal;
+    static Goal myGoal;
     static List<Bludger> bludgers;
 
     static int magic;
@@ -21,7 +25,8 @@ class Player {
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         int myTeamId = in.nextInt(); // if 0 you need to score on the right of the map, if 1 you need to score on the left
-        enemGoal = new EnemGoal(myTeamId);
+        enemyGoal = new Goal(myTeamId);
+        myGoal = new Goal(Math.abs(myTeamId-1));
         // game loop
         while (true) {
             snaffles = new ArrayList<>();
@@ -42,18 +47,15 @@ class Player {
                 int vx = in.nextInt(); // velocity
                 int vy = in.nextInt(); // velocity
                 int state = in.nextInt(); // 1 if the wizard is holding a Snaffle, 0 otherwise
-                int wizCount = 0;
                 if (entityType.equals("WIZARD")) {
-                    Wizard wizard = new Wizard(wizCount,state,x,y,vx,vy);
+                    Wizard wizard = new Wizard(entityId,state,x,y,vx,vy);
                     myTeam.add(wizard);
-                    wizCount++;
                 } else if (entityType.equals("SNAFFLE")) {
                     Snaffle snaffle = new Snaffle(entityId,x,y,vx,vy);
                     snaffles.add(snaffle);
                 } else if (entityType.equals("OPPONENT_WIZARD")) {
-                    Wizard wizard = new Wizard(wizCount,state,x,y,vx,vy);
+                    Wizard wizard = new Wizard(entityId,state,x,y,vx,vy);
                     enemyTeam.add(wizard);
-                    wizCount++;
                 } else if (entityType.equals("BLUDGER")) {
                     Bludger bludger = new Bludger(entityId,x,y,vx,vy);
                     bludgers.add(bludger);
@@ -67,25 +69,56 @@ class Player {
                 // Write an action using System.out.println()
                 // To debug: System.err.println("Debug messages...");
                 Wizard curWiz = myTeam.get(i);
-                if (curWiz.state == 0) {
-                    Entity nearShaff = curWiz.getNearestSnaff();
-                    if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
-                        int finalLastSnaffId = lastSnaffId;
-                        snaffles.removeIf(it -> it.id == finalLastSnaffId);
-                        nearShaff = curWiz.getNearestSnaff();
-                    }
-                    lastSnaffId = nearShaff.id;
+                States wizState = States.ATTACKING;
+                Entity target = null;
+                int turnsAfterOblig = 30;
 
-                    // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
-                    // i.e.: "MOVE x y thrust" or "THROW x y power"
-                    System.out.println("MOVE " + nearShaff.x + " " + nearShaff.y + " " + "150 " + curWiz.id);
-                } else if (curWiz.state == 1) {
-                    System.err.println("Wiz:" + curWiz.id + " has a ball");
-                    System.out.println("THROW " + enemGoal.center.x + " " + enemGoal.center.y + " " + "500 " + curWiz.id);
+                if (magic > 15) {
+                    wizState = States.MAGICFULL;
+                } else {
+//                    for (Bludger blud :
+//                            bludgers) {
+//                        System.err.println("Wiz:" + curWiz.id + " blud: " + blud.id + " " + blud.getDistance(curWiz) + "Mag " + magic);
+//                        if (blud.getDistance(curWiz) < 2500 && magic > 5 && turnsAfterOblig > 15) {
+//                            wizState = States.BLUDGING;
+//                            target = blud;
+//                        }
+//                    }
                 }
+
+                switch (wizState) {
+                    case ATTACKING:
+                        if (curWiz.state == 0) {
+                            Entity nearShaff = curWiz.getNearestSnaff();
+                            if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
+                                int finalLastSnaffId = lastSnaffId;
+                                snaffles.removeIf(it -> it.id == finalLastSnaffId);
+                                nearShaff = curWiz.getNearestSnaff();
+                            }
+                            lastSnaffId = nearShaff.id;
+
+                            // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
+                            // i.e.: "MOVE x y thrust" or "THROW x y power"
+                            System.out.println("MOVE " + nearShaff.x + " " + nearShaff.y + " " + "150 " + curWiz.id);
+                        } else if (curWiz.state == 1) {
+//                            System.err.println("Wiz:" + curWiz.id + " has a ball");
+                            System.out.println("THROW " + enemyGoal.center.x + " " + enemyGoal.center.y + " " + "500 " + curWiz.id);
+                        }
+                        break;
+                    case BLUDGING:
+                        System.out.println("OBLIVIATE " + target.id);
+                        turnsAfterOblig = 0;
+                        break;
+                    case MAGICFULL:
+                        System.out.println("ACCIO " + enemyTeam.get(0).id);
+                        magic -= 15;
+                        break;
+                }
+                magic++;
+                turnsAfterOblig++;
             }
 
-            magic++;
+
         }
     }
 
@@ -149,12 +182,12 @@ class Player {
         }
     }
 
-    static class EnemGoal {
+    static class Goal {
         Entity top;
         Entity down;
         Entity center;
 
-        public EnemGoal(int id) {
+        public Goal(int id) {
             if (id == 0) {
                 center = new Entity(-1,16000, 3750, 0, 0);
                 top = new Entity(-1,center.x, center.y - 2000, 0, 0);
