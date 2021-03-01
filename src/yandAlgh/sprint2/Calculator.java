@@ -4,6 +4,13 @@ import java.io.*;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+/**
+ * Складываем комманды стек так как для правильной работы необходимо выполнять с конца
+ *
+ * сложность операций O(n)
+ *
+ * успешня посылка https://contest.yandex.ru/contest/22781/run-report/48894050/
+ */
 public class Calculator {
 
     public static void main(String[] args) throws IOException {
@@ -11,6 +18,7 @@ public class Calculator {
 
         StringTokenizer tokenizerStr = new StringTokenizer(reader.readLine());
 
+        // стек для хранения комманд
         Stack<Integer> stack = new Stack<>();
 
         while (tokenizerStr.hasMoreTokens()) {
@@ -20,30 +28,29 @@ public class Calculator {
                 int num2 = stack.pop();
 
                 int sum = num1 + num2;
-                stack.add(sum);
+                stack.push(sum);
             } else if (elem.equals("-")) {
                 int num1 = stack.pop();
                 int num2 = stack.pop();
 
                 int minus = num2 - num1;
-                stack.add(minus);
+                stack.push(minus);
             } else if (elem.equals("*")) {
                 int num1 = stack.pop();
                 int num2 = stack.pop();
 
                 int mult = num1 * num2;
-                stack.add(mult);
+                stack.push(mult);
             } else if (elem.equals("/")) {
                 int num1 = stack.pop();
                 int num2 = stack.pop();
 
                 double del = (float) num2 / (float) num1;
                 double res = Math.floor(del);
-                stack.add((int) res);
+                stack.push((int) res);
             } else {
-                stack.add(Integer.parseInt(elem));
+                stack.push(Integer.parseInt(elem));
             }
-//            System.out.println(elem);
         }
 
         System.out.println(stack.pop());

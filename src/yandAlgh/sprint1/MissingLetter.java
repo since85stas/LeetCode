@@ -3,6 +3,7 @@ package yandAlgh.sprint1;
 import java.io.*;
 import java.util.*;
 
+// исключающее или
 public class MissingLetter {
 
     public static void main(String[] args) throws IOException {

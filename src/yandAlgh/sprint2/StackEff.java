@@ -6,7 +6,9 @@ import java.util.StringTokenizer;
 
 public class StackEff {
 
-    static private Stack<Integer> stack = new Stack<>();
+    static private final Stack<Integer> stack = new Stack<>();
+
+    static private final Stack<Integer> stackMax = new Stack<>();
 
     static int max = Integer.MIN_VALUE;
 
@@ -34,8 +36,13 @@ public class StackEff {
 
     static void push(int val) {
         stack.push(val);
-        if (val > max) {
-            max = val;
+        if (!stackMax.empty()) {
+            int lastMax = stackMax.peek();
+            if (val > lastMax) {
+                stackMax.push(val);
+            }
+        } else {
+            stackMax.push(val);
         }
     }
 
@@ -44,17 +51,21 @@ public class StackEff {
             System.out.println( "error");
         } else {
             int val = stack.pop();
-            if (val == max) {
-                max = val;
+
+            if (!stackMax.empty()) {
+                int lastMax = stackMax.peek();
+                if (val == lastMax) {
+                    stackMax.pop();
+                }
             }
         }
     }
 
     static String getMax() {
-        if (stack.empty()) {
+        if (stackMax.empty()) {
             return "None";
         } else {
-            return String.valueOf(max);
+            return String.valueOf(stackMax.peek());
         }
     }
 
