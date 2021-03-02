@@ -110,12 +110,12 @@ class Player {
                         turnsAfterOblig = 0;
                         break;
                     case MAGICFULL:
-                        System.out.println("ACCIO " + enemyTeam.get(0).id);
+                        Entity nearshaff = myGoal.center.getNearestSnaff();
+                        System.out.println("ACCIO " + nearshaff.id);
                         magic -= 15;
                         break;
                 }
                 magic++;
-                turnsAfterOblig++;
             }
 
 
@@ -141,6 +141,20 @@ class Player {
             int dist = (int)Math.sqrt( (x-entity.x)*(x-entity.x) + (y-entity.y)*(y-entity.y ));
             return dist;
         }
+
+        Entity getNearestSnaff() {
+            Snaffle near = null;
+            int minDist = Integer.MAX_VALUE;
+            for (Snaffle snaff:
+                    snaffles) {
+                int dist = snaff.getDistance(Entity.this);
+                if (dist < minDist) {
+                    minDist = dist;
+                    near = snaff;
+                }
+            }
+            return near;
+        }
     }
 
     static class Wizard extends Entity {
@@ -154,19 +168,7 @@ class Player {
             this.state = state;
         }
 
-        Entity getNearestSnaff() {
-            Snaffle near = null;
-            int minDist = Integer.MAX_VALUE;
-            for (Snaffle snaff:
-                 snaffles) {
-                int dist = snaff.getDistance(Wizard.this);
-                if (dist < minDist) {
-                    minDist = dist;
-                    near = snaff;
-                }
-            }
-            return near;
-        }
+
     }
 
     static class Snaffle extends Entity{
