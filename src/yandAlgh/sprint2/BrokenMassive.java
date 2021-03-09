@@ -36,12 +36,23 @@ public class BrokenMassive {
                     if (pos == 0) pos = i;
                 }
             }
-
-            int first = binarySearch(Arrays.copyOfRange(mass, 0, pos), k);
+            int[] subMass = Arrays.copyOfRange(mass, 0, pos);
+            int first = 0;
+            if (subMass.length > 0) {
+                first = binarySearch(subMass, k);
+            } else {
+                first = -1;
+            }
             if (first != -1) {
                 out = first;
             } else {
-                int second = binarySearch(Arrays.copyOfRange(mass, pos, mass.length), k);
+                subMass = Arrays.copyOfRange(mass, pos, mass.length);
+                int second = 0;
+                if (subMass.length > 0) {
+                    second = binarySearch(subMass, k);
+                } else {
+                    second = -1;
+                }
                 if (second != -1) {
                     out = pos + second;
                 }
@@ -49,21 +60,20 @@ public class BrokenMassive {
             System.out.println(out);
         } else {
             if (mass.length > 0) {
-                if(mass[0] == k) System.out.println(0);
+                if (mass[0] == k) System.out.println(0);
                 else System.out.println(-1);
             }
         }
-
     }
 
-    private static int binarySearch(int[] mass , int el) {
+    private static int binarySearch(int[] mass, int el) {
         int left = 0;
-        int right = mass.length-1;
-        while (right-left > 1){
-            int mid = left + (right-left)/2;
+        int right = mass.length - 1;
+        while (right - left > 1) {
+            int mid = left + (right - left) / 2;
             if (el == mass[mid]) {
                 return mid;
-            } else if (el < mid) {
+            } else if (el < mass[mid]) {
                 right = mid;
             } else {
                 left = mid;
