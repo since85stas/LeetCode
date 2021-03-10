@@ -4,6 +4,13 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+/**
+ * Так как мы знаем что массив был отсортирован то теперь в нем есть две отсортированные части, осталось найти их положение
+ *
+ * сложность алгоритма log(n)
+ *
+ * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289965/
+ */
 public class BrokenMassive {
 
     public static void main(String[] args) throws IOException {
@@ -17,6 +24,7 @@ public class BrokenMassive {
 
         int[] mass = new int[n];
 
+        // минимальное значение и его позиция
         int min = Integer.MAX_VALUE;
         int pos = 0;
 
@@ -25,17 +33,23 @@ public class BrokenMassive {
             mass[0] = Integer.parseInt(tokenizerStr.nextToken());
             min = mass[0];
         }
+        // результат
         int out = -1;
+
         if (tokenizerStr.hasMoreTokens()) {
             for (int i = 1; i < n; i++) {
                 int val = Integer.parseInt(tokenizerStr.nextToken());
                 mass[i] = val;
+
+                // ищем где нарушается монотонность, значит там граница отсортированных частей
                 if (val >= min) {
                     min = val;
                 } else {
                     if (pos == 0) pos = i;
                 }
             }
+
+            // далее запускаем поиск сначала по одной части, если не найден то по второй
             int[] subMass = Arrays.copyOfRange(mass, 0, pos);
             int first = 0;
             if (subMass.length > 0) {
@@ -66,6 +80,7 @@ public class BrokenMassive {
         }
     }
 
+    // простейший бинарный поиск
     private static int binarySearch(int[] mass, int el) {
         int left = 0;
         int right = mass.length - 1;
