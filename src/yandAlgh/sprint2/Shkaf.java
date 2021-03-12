@@ -16,27 +16,28 @@ public class Shkaf {
         if (tokenizerStr.hasMoreTokens()) {
             n = Integer.parseInt(tokenizerStr.nextToken());
         }
-
-        tokenizerStr = new StringTokenizer(reader.readLine());
-        if (tokenizerStr.hasMoreTokens()) {
-            int[] counter = new int[3];
-            for (int i = 0; i < n; i++) {
-                byte val = Byte.parseByte(tokenizerStr.nextToken());
-                if (val == 0) {
-                    counter[0] = counter[0] + 1;
-                } else if (val == 1) {
-                    counter[1] = counter[1] + 1;
-                } else if (val == 2) {
-                    counter[2] = counter[2] + 1;
+        if (n > 0) {
+            tokenizerStr = new StringTokenizer(reader.readLine());
+            if (tokenizerStr.hasMoreTokens()) {
+                int[] counter = new int[3];
+                for (int i = 0; i < n; i++) {
+                    byte val = Byte.parseByte(tokenizerStr.nextToken());
+                    if (val == 0) {
+                        counter[0] = counter[0] + 1;
+                    } else if (val == 1) {
+                        counter[1] = counter[1] + 1;
+                    } else if (val == 2) {
+                        counter[2] = counter[2] + 1;
+                    }
                 }
-            }
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < counter.length; i++) {
-                for (int j = 0; j < counter[i]; j++) {
-                    builder.append(i).append(" ");
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < counter.length; i++) {
+                    for (int j = 0; j < counter[i]; j++) {
+                        builder.append(i).append(" ");
+                    }
                 }
+                System.out.println(builder.toString());
             }
-            System.out.println(builder.toString());
         }
     }
 

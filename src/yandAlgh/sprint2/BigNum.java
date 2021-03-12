@@ -13,10 +13,16 @@ public class BigNum {
 
     static String compare(boolean test , Integer[] masIn) throws IOException {
         int n = 0;
-        Integer[] massive;
+        String[] massive;
         if (test) {
             n = masIn.length;
-            massive = masIn;
+            massive = new String[n];
+            int count = 0;
+            for (Integer in: masIn
+                 ) {
+                massive[count] = String.valueOf(masIn[count]);
+                count++;
+            }
         } else {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
 
@@ -24,58 +30,28 @@ public class BigNum {
 
             n = Integer.parseInt(tokenizerStr.nextToken());
 
-            massive = new Integer[n];
+            massive = new String[n];
             tokenizerStr = new StringTokenizer(reader.readLine());
             for (int i = 0; i < n; i++) {
-                massive[i] = Integer.parseInt(tokenizerStr.nextToken());
+                massive[i] = (tokenizerStr.nextToken());
             }
         }
 
-        Comparator<Integer> comp = new Comparator<Integer>() {
+        Comparator<String> comp = new Comparator<String>() {
             @Override
-            public int compare(Integer int1in, Integer int2in) {
-                String str1 = String.valueOf(int1in);
-                String str2 = String.valueOf(int2in);
-                StringBuilder int1 =new StringBuilder(String.valueOf(int1in));
-                StringBuilder int2 =new  StringBuilder(String.valueOf(int2in));
-                if (str1.length() > str2.length()) {
-                    for (int i = 0; i < str1.length() - str2.length(); i++) {
-                        int2.append(str2.charAt(str2.length()-1));
-                    }
-                } else if (str2.length() > str1.length()) {
-                    for (int i = 0; i < str2.length() - str1.length(); i++) {
-                        int1.append(str1.charAt(str1.length()-1));
-                    }
-                }
-                for (int i = 0; i < int1.length(); i++) {
-                    if (int1.charAt(i) > int2.charAt(i)) {
-                        return -1;
-                    } else if (int1.charAt(i) < int2.charAt(i)) {
-                        return 1;
-                    }
-                }
-
-                if (str1.equals(str2)) return 0;
-                if (str1.length() < str2.length()) {
-                    if (str1.charAt(0) < str1.charAt(str1.length()-1)) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                } else if (str1.length() > str2.length()) {
-                    if (str2.charAt(0) < str2.charAt(str2.length()-1)) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                }
-                return 0;
+            public int compare(String s, String s1) {
+                int first = Integer.parseInt(s + s1);
+                int second = Integer.parseInt(s1 + s);
+                if (first > second) return -1;
+                else if (first < second) return 1;
+                else return 0;
             }
         };
+
         StringBuilder builder = new StringBuilder();
 //        Arrays.stream(massive).mapToObj(it -> Integer.valueOf(it)).sorted(comp).forEach(it -> builder.append(it));
         Arrays.sort(massive, comp);
-        for (Integer i: massive
+        for (String i: massive
         ) {
             builder.append(i);
         }
