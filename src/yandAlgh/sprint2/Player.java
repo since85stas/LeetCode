@@ -68,36 +68,101 @@ class Player {
 
             }
 
-            myTeam.get(0).state.state = States.ATTACK;
+//            myTeam.get(0).state.state = States.ATTACK;
+//
+//            myTeam.get(1).state.state = States.ATTACK;
+//
+//            myTeam.get(0).getNextMove();
+//
+//            myTeam.get(1).getNextMove();
 
-            myTeam.get(1).state.state = States.ATTACK;
+            getStates();
 
             myTeam.get(0).getNextMove();
-
             myTeam.get(1).getNextMove();
-
         }
+    }
+
+    static void getStates() {
+
+        for (int i = 0; i < 2; i++) {
+            Wizard myWizard = myTeam.get(i);
+
+            myWizard.state.state = States.ATTACK;
+            myWizard.subState = AttackSubStates.MOVING;
+
+            int bludgId = -1;
+            for (Bludger bludger :
+                    bludgers) {
+                if (bludger.isEntityCollide(myWizard, 10)) {
+                    bludgId = bludger.id;
+                    myWizard.subState = AttackSubStates.AVOIDING;
+                    break;
+                }
+            }
+        }
+
     }
 
     static class Entity {
         int id;
-        int x;
-        int y;
+        Position pos = new Position();
         int vx;
         int vy;
+        int size;
 
-        public Entity(int id, int x, int y, int vx, int vy) {
+        public Entity(int id, int x, int y, int vx, int vy, int r) {
             this.id = id;
-            this.x = x;
-            this.y = y;
+            this.pos.x = x;
+            this.pos.y = y;
             this.vx = vx;
             this.vy = vy;
+            this.size = 2*r;
         }
 
         public int getDistance(Entity entity) {
-            int dist = (int)Math.sqrt( (x-entity.x)*(x-entity.x) + (y-entity.y)*(y-entity.y ));
+            int dist = (int)Math.sqrt( (pos.x-entity.pos.x)*(pos.x-entity.pos.x) + (pos.y-entity.pos.y)*(pos.y-entity.pos.y ));
             return dist;
         }
+
+        public boolean isEntityCollide(Entity entity, int turns) {
+            Entity thisFake = new Entity(id, pos.x, pos.y, vx,vy,size);
+            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.vx,entity.vy,entity.size);
+            for (int i = 1; i <= turns; i++) {
+                thisFake.pos = this.getPositionAfterTurns(i);
+                otherFake.pos = entity.getPositionAfterTurns(i);
+                if (thisFake.isIntersect(otherFake)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean isIntersect(Entity entity) {
+            int dist = getDistance(entity);
+            if (dist < (size/2 + entity.size/2)*0.2) {
+                return true;
+            }
+            else return false;
+        }
+
+        private Position getPositionAfterTurns(int turns) {
+            int x2 = pos.x + vx*turns;
+            int y2 = pos.y + vy*turns;
+            return new Position(x2, y2);
+        }
+    }
+
+    static class Position {
+        int x;
+        int y;
+
+        Position(int x, int y) {
+            this.x= x;
+            this.y = y;
+        }
+
+        Position() {}
     }
 
     static class WState {
@@ -115,10 +180,12 @@ class Player {
 
         WState state = new WState();
 
+        AttackSubStates subState = AttackSubStates.MOVING;
+
         boolean hasBall;
 
         public Wizard(int id, int state, int x, int y, int vx, int vy) {
-            super(id, x, y, vx, vy);
+            super(id, x, y, vx, vy, 400);
             this.id = id;
             hasBall = state==1;
         }
@@ -132,6 +199,20 @@ class Player {
                 if (dist < minDist) {
                     minDist = dist;
                     near = snaff;
+                }
+            }
+            return near;
+        }
+
+        Entity getNearestBludg() {
+            Bludger near = null;
+            int minDist = Integer.MAX_VALUE;
+            for (Bludger bludger :
+                    bludgers) {
+                int dist = bludger.getDistance(Wizard.this);
+                if (dist < minDist) {
+                    minDist = dist;
+                    near = bludger;
                 }
             }
             return near;
@@ -152,10 +233,10 @@ class Player {
 
                         // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
                         // i.e.: "MOVE x y thrust" or "THROW x y power"
-                        System.out.println("MOVE " + nearShaff.x + " " + nearShaff.y + " " + "150 " + id);
+                        System.out.println("MOVE " + nearShaff.pos.x + " " + nearShaff.pos.y + " " + "150 " + subState.name());
                     } else if (hasBall) {
 //                            System.err.println("Wiz:" + curWiz.id + " has a ball");
-                        System.out.println("THROW " + enemyGoal.center.x + " " + enemyGoal.center.y + " " + "500 " + id);
+                        System.out.println("THROW " + enemyGoal.center.pos.x + " " + enemyGoal.center.pos.y + " " + "500 " + id);
                     }
                     break;
                 case DEFENCE:
@@ -170,13 +251,13 @@ class Player {
     static class Snaffle extends Entity{
 
         public Snaffle(int id, int x, int y, int vx, int vy) {
-            super(id,x,y,vx,vy);
+            super(id,x,y,vx,vy,150);
         }
     }
 
     static class Bludger extends Entity {
         public Bludger(int id, int x, int y, int vx, int vy) {
-            super(id,x,y,vx,vy);
+            super(id,x,y,vx,vy,200);
         }
     }
 
@@ -187,13 +268,13 @@ class Player {
 
         public Goal(int id) {
             if (id == 0) {
-                center = new Entity(-1,16000, 3750, 0, 0);
-                top = new Entity(-1,center.x, center.y - 2000, 0, 0);
-                down = new Entity(-1,center.x, center.y + 2000, 0, 0);
+                center = new Entity(-1,16000, 3750, 0, 0,0);
+                top = new Entity(-1,center.pos.x, center.pos.y - 2000, 0, 0,300);
+                down = new Entity(-1,center.pos.x, center.pos.y + 2000, 0, 0,300);
             } else {
-                center = new Entity(-1, 0, 3750,0 ,0);
-                top = new Entity(-1, center.x, center.y - 2000, 0 ,0);
-                down = new Entity(-1, center.x, center.y + 2000, 0 ,0);
+                center = new Entity(-1, 0, 3750,0 ,0,0);
+                top = new Entity(-1, center.pos.x, center.pos.y - 2000, 0 ,0,300);
+                down = new Entity(-1, center.pos.x, center.pos.y + 2000, 0 ,0,300);
             }
         }
     }
