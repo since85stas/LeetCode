@@ -3,8 +3,11 @@ package yandAlgh.sprint2;
 import java.util.*;
 
 enum States {
-    ATTACKING, BLUDGING, MAGICFULL
+    ATTACK, DEFENCE
+}
 
+enum AttackSubStates {
+    MOVING, AVOIDING
 }
 
 /**
@@ -21,6 +24,8 @@ class Player {
     static List<Bludger> bludgers;
 
     static int magic;
+
+    static int lastSnaffId = -1;
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
@@ -63,61 +68,13 @@ class Player {
 
             }
 
-            int lastSnaffId  = -1;
-            for (int i = 0; i < 2; i++) {
+            myTeam.get(0).state.state = States.ATTACK;
 
-                // Write an action using System.out.println()
-                // To debug: System.err.println("Debug messages...");
-                Wizard curWiz = myTeam.get(i);
-                States wizState = States.ATTACKING;
-                Entity target = null;
-                int turnsAfterOblig = 30;
+            myTeam.get(1).state.state = States.ATTACK;
 
-                if (magic > 15) {
-                    wizState = States.MAGICFULL;
-                } else {
-//                    for (Bludger blud :
-//                            bludgers) {
-//                        System.err.println("Wiz:" + curWiz.id + " blud: " + blud.id + " " + blud.getDistance(curWiz) + "Mag " + magic);
-//                        if (blud.getDistance(curWiz) < 2500 && magic > 5 && turnsAfterOblig > 15) {
-//                            wizState = States.BLUDGING;
-//                            target = blud;
-//                        }
-//                    }
-                }
+            myTeam.get(0).getNextMove();
 
-                switch (wizState) {
-                    case ATTACKING:
-                        if (curWiz.state == 0) {
-                            Entity nearShaff = curWiz.getNearestSnaff();
-                            if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
-                                int finalLastSnaffId = lastSnaffId;
-                                snaffles.removeIf(it -> it.id == finalLastSnaffId);
-                                nearShaff = curWiz.getNearestSnaff();
-                            }
-                            lastSnaffId = nearShaff.id;
-
-                            // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
-                            // i.e.: "MOVE x y thrust" or "THROW x y power"
-                            System.out.println("MOVE " + nearShaff.x + " " + nearShaff.y + " " + "150 " + curWiz.id);
-                        } else if (curWiz.state == 1) {
-//                            System.err.println("Wiz:" + curWiz.id + " has a ball");
-                            System.out.println("THROW " + enemyGoal.center.x + " " + enemyGoal.center.y + " " + "500 " + curWiz.id);
-                        }
-                        break;
-                    case BLUDGING:
-                        System.out.println("OBLIVIATE " + target.id);
-                        turnsAfterOblig = 0;
-                        break;
-                    case MAGICFULL:
-                        Entity nearshaff = myGoal.center.getNearestSnaff();
-                        System.out.println("ACCIO " + nearshaff.id);
-                        magic -= 15;
-                        break;
-                }
-                magic++;
-            }
-
+            myTeam.get(1).getNextMove();
 
         }
     }
@@ -141,13 +98,37 @@ class Player {
             int dist = (int)Math.sqrt( (x-entity.x)*(x-entity.x) + (y-entity.y)*(y-entity.y ));
             return dist;
         }
+    }
+
+    static class WState {
+        States state;
+        Entity goal;
+        Entity enemy;
+
+
+
+        public WState() {}
+
+    }
+
+    static class Wizard extends Entity {
+
+        WState state = new WState();
+
+        boolean hasBall;
+
+        public Wizard(int id, int state, int x, int y, int vx, int vy) {
+            super(id, x, y, vx, vy);
+            this.id = id;
+            hasBall = state==1;
+        }
 
         Entity getNearestSnaff() {
             Snaffle near = null;
             int minDist = Integer.MAX_VALUE;
-            for (Snaffle snaff:
+            for (Snaffle snaff :
                     snaffles) {
-                int dist = snaff.getDistance(Entity.this);
+                int dist = snaff.getDistance(Wizard.this);
                 if (dist < minDist) {
                     minDist = dist;
                     near = snaff;
@@ -155,20 +136,35 @@ class Player {
             }
             return near;
         }
-    }
 
-    static class Wizard extends Entity {
-        int id;
+        String getNextMove() {
 
-        int state;
+            switch (state.state) {
+                case ATTACK:
+                    if (!hasBall) {
+                        Entity nearShaff = getNearestSnaff();
+                        if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
+                            int finalLastSnaffId = lastSnaffId;
+                            snaffles.removeIf(it -> it.id == finalLastSnaffId);
+                            nearShaff = getNearestSnaff();
+                        }
+                        lastSnaffId = nearShaff.id;
 
-        public Wizard(int id, int state,int x, int y, int vx, int vy) {
-            super(id,x,y,vx,vy);
-            this.id = id;
-            this.state = state;
+                        // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
+                        // i.e.: "MOVE x y thrust" or "THROW x y power"
+                        System.out.println("MOVE " + nearShaff.x + " " + nearShaff.y + " " + "150 " + id);
+                    } else if (hasBall) {
+//                            System.err.println("Wiz:" + curWiz.id + " has a ball");
+                        System.out.println("THROW " + enemyGoal.center.x + " " + enemyGoal.center.y + " " + "500 " + id);
+                    }
+                    break;
+                case DEFENCE:
+//                    System.out.println("OBLIVIATE " + id);
+                    break;
+            }
+            magic++;
+            return "";
         }
-
-
     }
 
     static class Snaffle extends Entity{
