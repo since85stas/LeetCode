@@ -6,6 +6,14 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+/**
+ * Здесь не очень понял, что не так с объявлением класса?
+ * Создаем вспомогательный класс для игроков далее как написано в описании
+ *
+ * сложность алгоритма n*log(n)
+ *
+ * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289745/
+ */
 public class QuickSortEff {
 
     public static void main(String[] args) throws IOException {
@@ -37,41 +45,64 @@ public class QuickSortEff {
         quickSort(players, 0, players.length - 1);
     }
 
+    /**
+     *
+     * @param players массив
+     * @param start начало сортировки
+     * @param end конец сортировки
+     */
     private static void quickSort (Player[] players, int start, int end) {
-        Random rand =new Random();
-        int pos = start + rand.nextInt(end- start);
-//        int pos = 2;
+
+        // в качестве опорного берем серидину
+        int pos = start + (end- start)/2;
         Player pivot = players[pos];
+
+        // внутренние указатели прохода
         int left = start;
         int right = end;
-        while (left <= right) {
+
+        do  {
+
             Player lP = players[left];
             Player rP = players[right];
-            if (lP.compareTo(pivot) != 1 && rP.compareTo(pivot) != -1) {
+
+            // ищем элемент слева который больше опорного
+            while (lP.compareTo(pivot) > 0) {
+                left++;
+                lP = players[left];
+            }
+
+            // ищем элемент справа который больше опорного
+            while (rP.compareTo(pivot) < 0) {
+                right--;
+                rP = players[right];
+            }
+
+            // если такие есть то меняем местами
+            if (left <= right) {
                 Player temp = players[left];
                 players[left] = players[right];
                 players[right] = temp;
                 left++;
                 right--;
-            } else {
-                if (lP.compareTo(pivot) == 1) {
-                    left++;
-                }
-                if (rP.compareTo(pivot) == -1) {
-                    right--;
-                }
             }
+        } while ((left <= right));
+
+        // рекурсивно запускаем для левой части
+        if (start < right) {
+            quickSort(players, start, right);
         }
 
-        if (pos - start > 1) {
-            quickSort(players, start, pos-1);
-        }
-
-        if (end - pos > 1) {
-            quickSort(players, pos, end);
+        // рекурсивно запускаем для правой части
+        if (left < end) {
+            quickSort(players, left, end);
         }
     }
 
+    /**
+     * вспомогательный класс для игроков
+     * Сравниваем сначала по очкам, затем по штрафным очкам и потом уже по имени
+     */
     private static class Player implements Comparable<Player>{
         String name;
         int score;
@@ -97,7 +128,8 @@ public class QuickSortEff {
                 } else if (this.fail > other.fail) {
                     return 1;
                 } else if (this.fail == other.fail) {
-                    return this.name.compareTo(other.name);
+                    int comp = this.name.compareTo(other.name);
+                    return comp;
                 }
             }
             return 0;
@@ -111,11 +143,6 @@ public class QuickSortEff {
             return score == player.score &&
                     fail == player.fail &&
                     Objects.equals(name, player.name);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(name, score, fail);
         }
     }
 
