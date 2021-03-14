@@ -182,6 +182,34 @@ class Player {
         }
     }
 
+    static class Vector {
+
+        int x;
+        int y;
+
+        Vector(Position start, Position end) {
+            this.x = end.x - start.x;
+            this.y = end.y - start.y;
+        }
+
+        Vector (int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        int len() {
+            return (int) Math.sqrt(x * x + y * y);
+        }
+
+        Vector plus(Vector other) {
+            return new Vector(x+other.x, y+other.y);
+        }
+
+        Vector one() {
+            return new Vector(x/len(), y/len());
+        }
+    }
+
     static class WState {
         States state;
         Entity goal;

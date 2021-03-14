@@ -94,4 +94,19 @@ class PlayerTest {
 
         assertEquals(true, entity.getPositionAfterTurns(2).equals(new Player.Position(14,-2)));
     }
+
+    @Test
+    public void testVector1() {
+        Player.Vector vector = new Player.Vector(new Player.Position(0,0), new Player.Position(1,0));
+        assertEquals(1, vector.len());
+
+        vector = new Player.Vector(new Player.Position(0,1), new Player.Position(0,0));
+        assertEquals(1, vector.len());
+
+        vector = new Player.Vector(new Player.Position(0,0), new Player.Position(0,0));
+        assertEquals(0, vector.len());
+
+        vector = new Player.Vector(new Player.Position(0,0), new Player.Position(4,3));
+        assertEquals(5, vector.len());
+    }
 }
