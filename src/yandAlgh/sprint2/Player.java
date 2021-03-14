@@ -107,16 +107,18 @@ class Player {
     static class Entity {
         int id;
         Position pos = new Position();
-        int vx;
-        int vy;
+        Vector v;
+//        int vx;
+//        int vy;
         int r;
 
         public Entity(int id, int x, int y, int vx, int vy, int r) {
             this.id = id;
             this.pos.x = x;
             this.pos.y = y;
-            this.vx = vx;
-            this.vy = vy;
+//            this.vx = vx;
+//            this.vy = vy;
+            v = new Vector(vx, vy);
             this.r = r;
         }
 
@@ -126,8 +128,8 @@ class Player {
         }
 
         public boolean isEntityCollide(Entity entity, int turns) {
-            Entity thisFake = new Entity(id, pos.x, pos.y, vx,vy, r);
-            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.vx,entity.vy,entity.r);
+            Entity thisFake = new Entity(id, pos.x, pos.y, v.x,v.y, r);
+            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.v.x,entity.v.y,entity.r);
             for (int i = 1; i <= turns; i++) {
                 thisFake.pos = this.getPositionAfterTurns(i);
                 otherFake.pos = entity.getPositionAfterTurns(i);
@@ -150,8 +152,8 @@ class Player {
         }
 
         Position getPositionAfterTurns(int turns) {
-            int x2 = pos.x + vx*turns;
-            int y2 = pos.y + vy*turns;
+            int x2 = pos.x + v.x*turns;
+            int y2 = pos.y + v.y*turns;
             return new Position(x2, y2);
         }
     }
@@ -208,6 +210,50 @@ class Player {
         Vector one() {
             return new Vector(x/len(), y/len());
         }
+
+        boolean isIntersectLine(Line line) {
+
+            return false;
+        }
+    }
+
+    static class Line {
+
+        Position a;
+
+        Position b;
+
+        Line(Position a, Position b) {
+            this.a = a;
+            this.b = b;
+        }
+
+//        Line(Entity a, Entity b) {
+//
+//        }
+
+        int len() {
+            int dist = (int)Math.sqrt( (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y ));
+            return dist;
+        }
+
+        Line extendLine(int lentgh) {
+            Vector napr = new Vector(a,b).one();
+
+            int x2 = a.x + lentgh*napr.x;
+            int y2 = a.y + lentgh*napr.y;
+            return new Line(a, new Position(x2,y2));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Line)) return false;
+            Line line = (Line) o;
+            return a.equals(line.a) &&
+                    b.equals(line.b);
+        }
+
     }
 
     static class WState {
@@ -215,9 +261,9 @@ class Player {
         Entity goal;
         Entity enemy;
 
+        public WState() {
 
-
-        public WState() {}
+        }
 
     }
 

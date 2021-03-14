@@ -109,4 +109,28 @@ class PlayerTest {
         vector = new Player.Vector(new Player.Position(0,0), new Player.Position(4,3));
         assertEquals(5, vector.len());
     }
+
+    @Test
+    public void extendLineTest() {
+        Player.Line line = new Player.Line(new Player.Position(0,0), new Player.Position(1,0));
+        Player.Line ext = line.extendLine(5);
+        assertEquals(true,new Player.Line(new Player.Position(0,0), new Player.Position(5,0)).equals(ext));
+        System.out.println("");
+    }
+
+    @Test
+    public void extendLineTest2() {
+        Player.Line line = new Player.Line(new Player.Position(0,0), new Player.Position(1,1));
+        Player.Line ext = line.extendLine(5);
+        assertEquals(true,new Player.Line(new Player.Position(0,0), new Player.Position(5,5)).equals(ext));
+        System.out.println("");
+    }
+
+    @Test
+    public void extendLineTest3() {
+        Player.Line line = new Player.Line(new Player.Position(0,0), new Player.Position(-1,1));
+        Player.Line ext = line.extendLine(3);
+        assertEquals(true,new Player.Line(new Player.Position(0,0), new Player.Position(-3,3)).equals(ext));
+        System.out.println("");
+    }
 }
