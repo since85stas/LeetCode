@@ -109,7 +109,7 @@ class Player {
         Position pos = new Position();
         int vx;
         int vy;
-        int size;
+        int r;
 
         public Entity(int id, int x, int y, int vx, int vy, int r) {
             this.id = id;
@@ -117,7 +117,7 @@ class Player {
             this.pos.y = y;
             this.vx = vx;
             this.vy = vy;
-            this.size = 2*r;
+            this.r = r;
         }
 
         public int getDistance(Entity entity) {
@@ -126,27 +126,30 @@ class Player {
         }
 
         public boolean isEntityCollide(Entity entity, int turns) {
-            Entity thisFake = new Entity(id, pos.x, pos.y, vx,vy,size);
-            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.vx,entity.vy,entity.size);
+            Entity thisFake = new Entity(id, pos.x, pos.y, vx,vy, r);
+            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.vx,entity.vy,entity.r);
             for (int i = 1; i <= turns; i++) {
                 thisFake.pos = this.getPositionAfterTurns(i);
                 otherFake.pos = entity.getPositionAfterTurns(i);
-                if (thisFake.isIntersect(otherFake)) {
+                boolean res = thisFake.isIntersect(otherFake);
+                System.err.println("i=" + i +" pos=" + thisFake.pos.toString() + " pos=" + otherFake.pos.toString() + " " + res) ;
+                if (res) {
                     return true;
                 }
+
             }
             return false;
         }
 
         private boolean isIntersect(Entity entity) {
             int dist = getDistance(entity);
-            if (dist < (size/2 + entity.size/2)*0.2) {
+            if (dist < (r + entity.r )*1.2) {
                 return true;
             }
             else return false;
         }
 
-        private Position getPositionAfterTurns(int turns) {
+        Position getPositionAfterTurns(int turns) {
             int x2 = pos.x + vx*turns;
             int y2 = pos.y + vy*turns;
             return new Position(x2, y2);
@@ -163,6 +166,20 @@ class Player {
         }
 
         Position() {}
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Position)) return false;
+            Position position = (Position) o;
+            return x == position.x &&
+                    y == position.y;
+        }
+
+        @Override
+        public String toString() {
+            return "(" + x + "," + y + ")";
+        }
     }
 
     static class WState {
