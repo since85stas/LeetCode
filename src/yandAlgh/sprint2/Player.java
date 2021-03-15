@@ -3,7 +3,7 @@ package yandAlgh.sprint2;
 import java.util.*;
 
 enum States {
-    ATTACK, DEFENCE
+    ATTACK, DEFENCE, FLIPENDO
 }
 
 enum AttackSubStates {
@@ -31,12 +31,12 @@ class Player {
         Scanner in = new Scanner(System.in);
         int myTeamId = in.nextInt(); // if 0 you need to score on the right of the map, if 1 you need to score on the left
         enemyGoal = new Goal(myTeamId);
-        myGoal = new Goal(Math.abs(myTeamId-1));
+        myGoal = new Goal(Math.abs(myTeamId - 1));
         // game loop
         while (true) {
             snaffles = new ArrayList<>();
-            myTeam =  new ArrayList<>();
-            enemyTeam =  new ArrayList<>();
+            myTeam = new ArrayList<>();
+            enemyTeam = new ArrayList<>();
             bludgers = new ArrayList<>();
 
             int myScore = in.nextInt();
@@ -53,16 +53,16 @@ class Player {
                 int vy = in.nextInt(); // velocity
                 int state = in.nextInt(); // 1 if the wizard is holding a Snaffle, 0 otherwise
                 if (entityType.equals("WIZARD")) {
-                    Wizard wizard = new Wizard(entityId,state,x,y,vx,vy);
+                    Wizard wizard = new Wizard(entityId, state, x, y, vx, vy);
                     myTeam.add(wizard);
                 } else if (entityType.equals("SNAFFLE")) {
-                    Snaffle snaffle = new Snaffle(entityId,x,y,vx,vy);
+                    Snaffle snaffle = new Snaffle(entityId, x, y, vx, vy);
                     snaffles.add(snaffle);
                 } else if (entityType.equals("OPPONENT_WIZARD")) {
-                    Wizard wizard = new Wizard(entityId,state,x,y,vx,vy);
+                    Wizard wizard = new Wizard(entityId, state, x, y, vx, vy);
                     enemyTeam.add(wizard);
                 } else if (entityType.equals("BLUDGER")) {
-                    Bludger bludger = new Bludger(entityId,x,y,vx,vy);
+                    Bludger bludger = new Bludger(entityId, x, y, vx, vy);
                     bludgers.add(bludger);
                 }
 
@@ -104,11 +104,21 @@ class Player {
 
     }
 
+    private static boolean checkFlipendo(Wizard wizard) {
+
+        for (Snaffle snuf :
+                snaffles) {
+
+        }
+
+        return false;
+    }
+
     static class Entity {
         int id;
         Position pos = new Position();
         Vector v;
-//        int vx;
+        //        int vx;
 //        int vy;
         int r;
 
@@ -123,13 +133,13 @@ class Player {
         }
 
         public int getDistance(Entity entity) {
-            int dist = (int)Math.sqrt( (pos.x-entity.pos.x)*(pos.x-entity.pos.x) + (pos.y-entity.pos.y)*(pos.y-entity.pos.y ));
+            int dist = (int) Math.sqrt((pos.x - entity.pos.x) * (pos.x - entity.pos.x) + (pos.y - entity.pos.y) * (pos.y - entity.pos.y));
             return dist;
         }
 
         public boolean isEntityCollide(Entity entity, int turns) {
-            Entity thisFake = new Entity(id, pos.x, pos.y, v.x,v.y, r);
-            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.v.x,entity.v.y,entity.r);
+            Entity thisFake = new Entity(id, pos.x, pos.y, v.x, v.y, r);
+            Entity otherFake = new Entity(entity.id, entity.pos.x, entity.pos.y, entity.v.x, entity.v.y, entity.r);
             for (int i = 1; i <= turns; i++) {
                 thisFake.pos = this.getPositionAfterTurns(i);
                 otherFake.pos = entity.getPositionAfterTurns(i);
@@ -145,15 +155,14 @@ class Player {
 
         private boolean isIntersect(Entity entity) {
             int dist = getDistance(entity);
-            if (dist < (r + entity.r )*1.2) {
+            if (dist < (r + entity.r) * 1.2) {
                 return true;
-            }
-            else return false;
+            } else return false;
         }
 
         Position getPositionAfterTurns(int turns) {
-            double x2 = pos.x + v.x*turns;
-            double y2 = pos.y + v.y*turns;
+            double x2 = pos.x + v.x * turns;
+            double y2 = pos.y + v.y * turns;
             return new Position(x2, y2);
         }
     }
@@ -163,16 +172,17 @@ class Player {
         double y;
 
         Position(int x, int y) {
-            this.x= x;
+            this.x = x;
             this.y = y;
         }
 
         Position(double x, double y) {
-            this.x= x;
+            this.x = x;
             this.y = y;
         }
 
-        Position() {}
+        Position() {
+        }
 
         @Override
         public boolean equals(Object o) {
@@ -199,12 +209,12 @@ class Player {
             this.y = end.y - start.y;
         }
 
-        Vector (int x, int y) {
+        Vector(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
-        Vector (double x, double y) {
+        Vector(double x, double y) {
             this.x = x;
             this.y = y;
         }
@@ -214,12 +224,12 @@ class Player {
         }
 
         Vector plus(Vector other) {
-            return new Vector(x+other.x, y+other.y);
+            return new Vector(x + other.x, y + other.y);
         }
 
         Vector one() {
-            double xx = this.x/len();
-            double yy = this.y/len();
+            double xx = this.x / len();
+            double yy = this.y / len();
             Vector v = new Vector(xx, yy);
             return v;
         }
@@ -251,16 +261,41 @@ class Player {
 //        }
 
         double len() {
-            double dist = Math.sqrt( (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y ));
+            double dist = Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
             return dist;
         }
 
         Line extendLine(int lentgh) {
-            Vector napr = new Vector(a,b).one();
+            Vector napr = new Vector(a, b).one();
 
-            double x2 = a.x + lentgh*napr.x;
-            double y2 = a.y + lentgh*napr.y;
-            return new Line(a, new Position(x2,y2));
+            double x2 = a.x + lentgh * napr.x;
+            double y2 = a.y + lentgh * napr.y;
+            return new Line(a, new Position(x2, y2));
+        }
+
+        Position isIntersect(Line other) {
+            double a1 = this.a.y - this.b.y;
+
+            double b1 = this.a.x - this.b.x;
+
+            double c1 = a1 * (this.a.x) + b1 * (this.a.y);
+
+            // Линия CD представлена как a2x + b2y = c2
+
+            double a2 = other.a.y - other.b.y;
+
+            double b2 = other.a.x - other.b.x;
+
+            double c2 = a2 * (other.a.x) + b2 * (other.a.y);
+
+            double determinant = a1 * b2 - a2 * b1;
+            if (determinant == 0) {
+                return null;
+            } else {
+                double x = (b2 * c1 - b1 * c2) / determinant;
+                double y = (a1 * c2 - a2 * c1) / determinant;
+                return new Position(x, y);
+            }
         }
 
         @Override
@@ -300,7 +335,7 @@ class Player {
         public Wizard(int id, int state, int x, int y, int vx, int vy) {
             super(id, x, y, vx, vy, 400);
             this.id = id;
-            hasBall = state==1;
+            hasBall = state == 1;
         }
 
         Entity getNearestSnaff() {
@@ -349,9 +384,9 @@ class Player {
                         Line ext = new Line(pos, nearShaff.pos).extendLine(10000);
 
 //                        System.out.println("MOVE " + nearShaff.pos.x + " " + nearShaff.pos.y + " " + "150 " + subState.name());
-                        System.out.println("MOVE " + (int)ext.b.x + " " + (int)ext.b.y + " " + "150 " + subState.name());
+                        System.out.println("MOVE " + (int) ext.b.x + " " + (int) ext.b.y + " " + "150 " + subState.name());
                     } else if (hasBall) {
-                        System.out.println("THROW " + (int)enemyGoal.center.pos.x + " " + (int)enemyGoal.center.pos.y + " " + "500 " + id);
+                        System.out.println("THROW " + (int) enemyGoal.center.pos.x + " " + (int) enemyGoal.center.pos.y + " " + "500 " + id);
                     }
                     break;
                 case DEFENCE:
@@ -363,16 +398,16 @@ class Player {
         }
     }
 
-    static class Snaffle extends Entity{
+    static class Snaffle extends Entity {
 
         public Snaffle(int id, int x, int y, int vx, int vy) {
-            super(id,x,y,vx,vy,150);
+            super(id, x, y, vx, vy, 150);
         }
     }
 
     static class Bludger extends Entity {
         public Bludger(int id, int x, int y, int vx, int vy) {
-            super(id,x,y,vx,vy,200);
+            super(id, x, y, vx, vy, 200);
         }
     }
 
@@ -380,16 +415,19 @@ class Player {
         Entity top;
         Entity down;
         Entity center;
+        Line innerLine;
 
         public Goal(int id) {
             if (id == 0) {
-                center = new Entity(-1,16000, 3750, 0, 0,0);
-                top = new Entity(-1,(int) center.pos.x, (int)center.pos.y - 2000, 0, 0,300);
-                down = new Entity(-1,(int)center.pos.x, (int)center.pos.y + 2000, 0, 0,300);
+                center = new Entity(-1, 16000, 3750, 0, 0, 0);
+                top = new Entity(-1, (int) center.pos.x, (int) center.pos.y - 2000, 0, 0, 300);
+                down = new Entity(-1, (int) center.pos.x, (int) center.pos.y + 2000, 0, 0, 300);
+                innerLine = new Line(top.pos, down.pos);
             } else {
-                center = new Entity(-1, 0, 3750,0 ,0,0);
-                top = new Entity(-1, (int)center.pos.x, (int)center.pos.y - 2000, 0 ,0,300);
-                down = new Entity(-1, (int)center.pos.x, (int)center.pos.y + 2000, 0 ,0,300);
+                center = new Entity(-1, 0, 3750, 0, 0, 0);
+                top = new Entity(-1, (int) center.pos.x, (int) center.pos.y - 2000, 0, 0, 300);
+                down = new Entity(-1, (int) center.pos.x, (int) center.pos.y + 2000, 0, 0, 300);
+                innerLine = new Line(top.pos, down.pos);
             }
         }
     }

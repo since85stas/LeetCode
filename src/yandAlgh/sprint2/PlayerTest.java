@@ -133,4 +133,14 @@ class PlayerTest {
         assertEquals(true,new Player.Line(new Player.Position(0,0), new Player.Position(-3,3)).equals(ext));
         System.out.println("");
     }
+
+    @Test
+    public void intersectLineTest1() {
+        Player.Line line = new Player.Line(new Player.Position(-1,0), new Player.Position(1,0));
+        Player.Line line2 = new Player.Line(new Player.Position(0,-1), new Player.Position(0,1));
+        Player.Position inter = line.isIntersect(line2);
+
+//        assertEquals(true,new Player.Line(new Player.Position(0,0), new Player.Position(-3,3)).equals(ext));
+        System.out.println("");
+    }
 }
