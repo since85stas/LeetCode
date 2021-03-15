@@ -112,7 +112,7 @@ class Player {
 //        int vy;
         int r;
 
-        public Entity(int id, int x, int y, int vx, int vy, int r) {
+        public Entity(int id, double x, double y, double vx, double vy, int r) {
             this.id = id;
             this.pos.x = x;
             this.pos.y = y;
@@ -134,7 +134,7 @@ class Player {
                 thisFake.pos = this.getPositionAfterTurns(i);
                 otherFake.pos = entity.getPositionAfterTurns(i);
                 boolean res = thisFake.isIntersect(otherFake);
-                System.err.println("i=" + i +" pos=" + thisFake.pos.toString() + " pos=" + otherFake.pos.toString() + " " + res) ;
+//                System.err.println("i=" + i +" pos=" + thisFake.pos.toString() + " pos=" + otherFake.pos.toString() + " " + res) ;
                 if (res) {
                     return true;
                 }
@@ -152,17 +152,22 @@ class Player {
         }
 
         Position getPositionAfterTurns(int turns) {
-            int x2 = pos.x + v.x*turns;
-            int y2 = pos.y + v.y*turns;
+            double x2 = pos.x + v.x*turns;
+            double y2 = pos.y + v.y*turns;
             return new Position(x2, y2);
         }
     }
 
     static class Position {
-        int x;
-        int y;
+        double x;
+        double y;
 
         Position(int x, int y) {
+            this.x= x;
+            this.y = y;
+        }
+
+        Position(double x, double y) {
             this.x= x;
             this.y = y;
         }
@@ -186,8 +191,8 @@ class Player {
 
     static class Vector {
 
-        int x;
-        int y;
+        double x;
+        double y;
 
         Vector(Position start, Position end) {
             this.x = end.x - start.x;
@@ -199,7 +204,12 @@ class Player {
             this.y = y;
         }
 
-        int len() {
+        Vector (double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        double len() {
             return (int) Math.sqrt(x * x + y * y);
         }
 
@@ -208,12 +218,20 @@ class Player {
         }
 
         Vector one() {
-            return new Vector(x/len(), y/len());
+            double xx = this.x/len();
+            double yy = this.y/len();
+            Vector v = new Vector(xx, yy);
+            return v;
         }
 
         boolean isIntersectLine(Line line) {
 
             return false;
+        }
+
+        @Override
+        public String toString() {
+            return "(" + x + "," + y + ")";
         }
     }
 
@@ -232,16 +250,16 @@ class Player {
 //
 //        }
 
-        int len() {
-            int dist = (int)Math.sqrt( (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y ));
+        double len() {
+            double dist = Math.sqrt( (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y ));
             return dist;
         }
 
         Line extendLine(int lentgh) {
             Vector napr = new Vector(a,b).one();
 
-            int x2 = a.x + lentgh*napr.x;
-            int y2 = a.y + lentgh*napr.y;
+            double x2 = a.x + lentgh*napr.x;
+            double y2 = a.y + lentgh*napr.y;
             return new Line(a, new Position(x2,y2));
         }
 
@@ -254,6 +272,10 @@ class Player {
                     b.equals(line.b);
         }
 
+        @Override
+        public String toString() {
+            return "a=" + a + " b=" + b;
+        }
     }
 
     static class WState {
@@ -324,10 +346,12 @@ class Player {
 
                         // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
                         // i.e.: "MOVE x y thrust" or "THROW x y power"
-                        System.out.println("MOVE " + nearShaff.pos.x + " " + nearShaff.pos.y + " " + "150 " + subState.name());
+                        Line ext = new Line(pos, nearShaff.pos).extendLine(10000);
+
+//                        System.out.println("MOVE " + nearShaff.pos.x + " " + nearShaff.pos.y + " " + "150 " + subState.name());
+                        System.out.println("MOVE " + (int)ext.b.x + " " + (int)ext.b.y + " " + "150 " + subState.name());
                     } else if (hasBall) {
-//                            System.err.println("Wiz:" + curWiz.id + " has a ball");
-                        System.out.println("THROW " + enemyGoal.center.pos.x + " " + enemyGoal.center.pos.y + " " + "500 " + id);
+                        System.out.println("THROW " + (int)enemyGoal.center.pos.x + " " + (int)enemyGoal.center.pos.y + " " + "500 " + id);
                     }
                     break;
                 case DEFENCE:
@@ -360,12 +384,12 @@ class Player {
         public Goal(int id) {
             if (id == 0) {
                 center = new Entity(-1,16000, 3750, 0, 0,0);
-                top = new Entity(-1,center.pos.x, center.pos.y - 2000, 0, 0,300);
-                down = new Entity(-1,center.pos.x, center.pos.y + 2000, 0, 0,300);
+                top = new Entity(-1,(int) center.pos.x, (int)center.pos.y - 2000, 0, 0,300);
+                down = new Entity(-1,(int)center.pos.x, (int)center.pos.y + 2000, 0, 0,300);
             } else {
                 center = new Entity(-1, 0, 3750,0 ,0,0);
-                top = new Entity(-1, center.pos.x, center.pos.y - 2000, 0 ,0,300);
-                down = new Entity(-1, center.pos.x, center.pos.y + 2000, 0 ,0,300);
+                top = new Entity(-1, (int)center.pos.x, (int)center.pos.y - 2000, 0 ,0,300);
+                down = new Entity(-1, (int)center.pos.x, (int)center.pos.y + 2000, 0 ,0,300);
             }
         }
     }
