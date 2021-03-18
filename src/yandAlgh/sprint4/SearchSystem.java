@@ -13,7 +13,6 @@ public class SearchSystem {
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
         short n = Short.parseShort(tokenizer.nextToken());
 
-
         // создаем поисковую систему
         docs = new HashMap<>();
         words = new HashMap<>();
@@ -46,33 +45,73 @@ public class SearchSystem {
             HashMap<Short, Integer> relevance = new HashMap<>();
 
             int max = 0;
+            HashSet<String> uniqe = new HashSet<>();
             while (tokenizer.hasMoreTokens()) {
                 String req = tokenizer.nextToken();
 //                TreeSet<Short> relev = new TreeSet<>();
-                List<Short> buckets = words.get(req);
-                byte limit = 5;
-                if (buckets != null) {
-                    for (Short buckId :
-                            buckets) {
-                        short count = docs.get(buckId).get(req);
+                if (!uniqe.contains(req)) {
+                    uniqe.add(req);
+                    List<Short> buckets = words.get(req);
+                    byte limit = 5;
+                    if (buckets != null) {
+                        for (Short buckId :
+                                buckets) {
+                            short count = docs.get(buckId).get(req);
 //                    max = max + count;
-                        if (relevance.containsKey(buckId)) {
-                            int oldc = relevance.get(buckId);
-                            relevance.put(buckId, oldc + count);
-                        } else {
-                            relevance.put(buckId, (int) count);
+                            if (relevance.containsKey(buckId)) {
+                                int oldc = relevance.get(buckId);
+                                relevance.put(buckId, oldc + count);
+                            } else {
+                                relevance.put(buckId, (int) count);
+                            }
                         }
                     }
                 }
             }
+            List<Pair> result = new ArrayList<>();
+
+            for (Short id:
+            relevance.keySet()) {
+                result.add(new Pair(id, relevance.get(id)));
+            }
+
+            Collections.sort(result);
+
             StringBuilder builder = new StringBuilder();
-//            for (Short id:
-//                 re) {
-//
-//            }
+            byte coont = 0;
+            for (Pair pair :
+                    result) {
+                builder.append(pair.id).append(" ");
+                coont++;
+                if (coont >=5) {
+                    break;
+                }
+            }
+            System.out.println(builder.toString());
+
         }
 
-        System.out.println();
+
+
+
+//        System.out.println();
+    }
+
+    static class Pair implements Comparable<Pair>{
+        short id;
+
+        int num;
+
+        Pair(short id, int num) {
+            this.id = id;
+            this.num = num;
+        }
+
+        @Override
+        public int compareTo(Pair pair) {
+            if (num != pair.num) return Integer.compare(pair.num, num);
+            else return Short.compare(id, pair.id);
+        }
     }
 
 }
