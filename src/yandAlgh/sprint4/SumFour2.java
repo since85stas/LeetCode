@@ -3,7 +3,7 @@ package yandAlgh.sprint4;
 import java.io.*;
 import java.util.*;
 
-public class SumFours {
+public class SumFour2 {
 
 
     public static void main(String[] args) throws IOException {
@@ -12,7 +12,7 @@ public class SumFours {
         int n = Integer.parseInt(tokenizer.nextToken());
 
         tokenizer = new StringTokenizer(reader.readLine());
-        short s = Short.parseShort(tokenizer.nextToken());
+        int s = Integer.parseInt(tokenizer.nextToken());
 
         int[] array = new int[n];
         tokenizer = new StringTokenizer(reader.readLine());
@@ -20,17 +20,20 @@ public class SumFours {
             array[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
-        Arrays.sort(array);
-
         findTriplets(array, array.length, s);
     }
 
+    // function to print triplets with 0 sum
     static void findTriplets(int arr[], int n, int s)
     {
+        boolean found = false;
+
         HashSet<Four> resSet = new HashSet<>();
 
         for (int i = 0; i < n - 2; i++)
         {
+            // Find all pairs with sum equals to
+            // "-arr[i]"
 //            HashSet<Integer> set = new HashSet<Integer>();
             for (int j = i + 1; j < n - 1; j++)
             {
@@ -42,15 +45,8 @@ public class SumFours {
                     if (set.contains(x))
                     {
 //                        System.out.printf("%d %d %d %d\n", x, arr[i], arr[j], arr[k]);
-                        if (x < arr[i]) {
-                            resSet.add(new Four(x, arr[i], arr[j], arr[k]));
-                        } else if (x < arr[j]) {
-                            resSet.add(new Four(arr[i],x, arr[j], arr[k]));
-                        } else if (x < arr[k]) {
-                            resSet.add(new Four(arr[i],arr[j], x, arr[k]));
-                        } else {
-                            resSet.add(new Four(arr[i],arr[j], arr[k],x));
-                        }
+                        resSet.add(new Four(x, arr[i], arr[j], arr[k]));
+                        found = true;
                     }
                     else
                     {
@@ -61,13 +57,14 @@ public class SumFours {
             }
         }
 
-        List<Four> list = new ArrayList<>(resSet);
-//
+        List<Four> list = new ArrayList<>();
+        list.addAll(resSet);
+
         Collections.sort(list);
         System.out.println(list.size());
         for (Four f:
-             list) {
-            System.out.println(f.comp);
+                list) {
+            System.out.println(f.getName());
         }
 
 //        if (found == false)
@@ -86,25 +83,31 @@ public class SumFours {
         String comp;
 
         public Four (int a, int b, int c, int d) {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.d = d;
-//            int[] arr = new int[4];
-//            arr[0] = a;
-//            arr[1] = b;
-//            arr[2] = c;
-//            arr[3] = d;
-//
-//            Arrays.sort(arr);
-//
-//            this.a = arr[0];
-//            this.b = arr[1];
-//            this.c = arr[2];
-//            this.d = arr[3];
+//            this.a = a;
+//            this.b = b;
+//            this.d = d;
+//            this.c = c;
+
+            int[] arr = new int[4];
+            arr[0] = a;
+            arr[1] = b;
+            arr[2] = c;
+            arr[3] = d;
+
+            Arrays.sort(arr);
+
+            this.a = arr[0];
+            this.b = arr[1];
+            this.c = arr[2];
+            this.d = arr[3];
+
+        }
+
+        String getName() {
             StringBuilder builder = new StringBuilder();
             builder.append(this.a).append(" ").append(this.b).append(" ").append(this.c).append(" ").append(this.d);
             comp = builder.toString();
+            return comp;
         }
 
         @Override
