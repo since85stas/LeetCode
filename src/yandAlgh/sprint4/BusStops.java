@@ -43,8 +43,8 @@ public class BusStops {
     }
 
     static class Coord {
-        int x;
-        int y;
+        long x;
+        long y;
 
         public Coord(int x,int y) {
             this.x = x;

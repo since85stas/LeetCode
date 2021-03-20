@@ -5,27 +5,27 @@ import java.util.*;
 
 public class SearchSystem {
 
-    static HashMap<Short, HashMap<String, Short>> docs;
-    static HashMap<String, List<Short>> words;
+    static HashMap<Integer, HashMap<String, Integer>> docs;
+    static HashMap<String, List<Integer>> words;
 
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input2.txt"))));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-        short n = Short.parseShort(tokenizer.nextToken());
+        Integer n = Integer.parseInt(tokenizer.nextToken());
 
         // создаем поисковую систему
         docs = new HashMap<>();
         words = new HashMap<>();
-        for (short i = 1; i <= n; i++) {
+        for (Integer i = 1; i <= n; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
             docs.put(i, new HashMap<>());
             while (tokenizer.hasMoreTokens()) {
                 String str = tokenizer.nextToken();
                 if (docs.get(i).containsKey(str)) {
-                    short num = docs.get(i).get(str);
-                    docs.get(i).put(str,(short) (num+1));
+                    Integer num = docs.get(i).get(str);
+                    docs.get(i).put(str,(Integer) (num+1));
                 } else {
-                    docs.get(i).put(str, (short)1);
+                    docs.get(i).put(str, (Integer)1);
                 }
 
                 if (words.containsKey(str)) {
@@ -39,24 +39,23 @@ public class SearchSystem {
 
         // считываем запросы
         tokenizer = new StringTokenizer(reader.readLine());
-        short m = Short.parseShort(tokenizer.nextToken());
+        Integer m = Integer.parseInt(tokenizer.nextToken());
         for (int i = 0; i < m; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
-            HashMap<Short, Integer> relevance = new HashMap<>();
+            HashMap<Integer, Integer> relevance = new HashMap<>();
 
-            int max = 0;
             HashSet<String> uniqe = new HashSet<>();
             while (tokenizer.hasMoreTokens()) {
                 String req = tokenizer.nextToken();
-//                TreeSet<Short> relev = new TreeSet<>();
+//                TreeSet<Integer> relev = new TreeSet<>();
                 if (!uniqe.contains(req)) {
                     uniqe.add(req);
-                    List<Short> buckets = words.get(req);
+                    List<Integer> buckets = words.get(req);
                     byte limit = 5;
                     if (buckets != null) {
-                        for (Short buckId :
+                        for (Integer buckId :
                                 buckets) {
-                            short count = docs.get(buckId).get(req);
+                            Integer count = docs.get(buckId).get(req);
 //                    max = max + count;
                             if (relevance.containsKey(buckId)) {
                                 int oldc = relevance.get(buckId);
@@ -70,7 +69,7 @@ public class SearchSystem {
             }
             List<Pair> result = new ArrayList<>();
 
-            for (Short id:
+            for (Integer id:
             relevance.keySet()) {
                 result.add(new Pair(id, relevance.get(id)));
             }
@@ -87,7 +86,7 @@ public class SearchSystem {
                     break;
                 }
             }
-            System.out.println(builder.toString());
+            if (builder.length() > 0) System.out.println(builder.toString());
 
         }
 
@@ -98,11 +97,11 @@ public class SearchSystem {
     }
 
     static class Pair implements Comparable<Pair>{
-        short id;
+        Integer id;
 
         int num;
 
-        Pair(short id, int num) {
+        Pair(Integer id, int num) {
             this.id = id;
             this.num = num;
         }
@@ -110,7 +109,7 @@ public class SearchSystem {
         @Override
         public int compareTo(Pair pair) {
             if (num != pair.num) return Integer.compare(pair.num, num);
-            else return Short.compare(id, pair.id);
+            else return Integer.compare(id, pair.id);
         }
     }
 
