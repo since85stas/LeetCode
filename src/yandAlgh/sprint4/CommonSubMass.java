@@ -30,6 +30,7 @@ public class CommonSubMass {
             builder.append(c);
         }
         String s2 = builder.toString();
+
         int res = LCSubStr(s1,s2,s1.length(),s2.length());
         System.out.println(res);
     }
