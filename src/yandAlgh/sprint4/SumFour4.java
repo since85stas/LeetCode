@@ -20,6 +20,8 @@ public class SumFour4 {
             array[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
+        Arrays.sort(array);
+
         findFours(array, array.length, s);
     }
 
@@ -31,12 +33,15 @@ public class SumFour4 {
         HashSet<Four> resSet = new HashSet<>();
 //        List<Four> resList = new ArrayList<>();
         HashMap<Pair, Integer> pairMaps = new HashMap<>();
-        for (int i = 0; i < n - 1; i++)
+        boolean isMax = false;
+        for (int i = 0; i < n - 1 && !isMax; i++)
         {
 //            HashMap<Integer, Pair> set = new HashMap<>();
-            for (int j = i + 1; j < n; j++)
+            for (int j = i + 1; j < n && !isMax; j++)
             {
-                pairMaps.put(new Pair(i,j), arr[i] + arr[j]);
+                int sum = arr[i] + arr[j];
+                if (j == i+1 && sum > s) isMax = true;
+                else pairMaps.put(new Pair(i,j), arr[i] + arr[j]);
 //                    int x = arr[i] + arr[j];
 //                    if (set.containsKey(x))
 //                    {
