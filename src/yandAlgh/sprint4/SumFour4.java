@@ -20,7 +20,7 @@ public class SumFour4 {
             array[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
-        Arrays.sort(array);
+//        Arrays.sort(array);
 
         findFours(array, array.length, s);
     }
@@ -34,26 +34,32 @@ public class SumFour4 {
 //        List<Four> resList = new ArrayList<>();
         HashMap<Pair, Integer> pairMaps = new HashMap<>();
         boolean isMax = false;
-        for (int i = 0; i < n - 1 && !isMax; i++)
+        HashMap<Integer, Pair> sums = new HashMap<>();
+        HashSet<Four> fourssums = new HashSet<>();
+        for (int i = 0; i < n - 1 ; i++)
         {
-//            HashMap<Integer, Pair> set = new HashMap<>();
-            for (int j = i + 1; j < n && !isMax; j++)
+            for (int j = i + 1; j < n; j++)
             {
                 int sum = arr[i] + arr[j];
-                if (j == i+1 && sum > s) isMax = true;
-                else pairMaps.put(new Pair(i,j), arr[i] + arr[j]);
-//                    int x = arr[i] + arr[j];
-//                    if (set.containsKey(x))
-//                    {
-////                        System.out.printf("%d %d %d %d\n", x, arr[i], arr[j], arr[k]);
-//                        resSet.add(new Four(arr[i], arr[j], set.get(x).i1,set.get(x).i2));
-////                        resList.add(new Four(x, arr[i], arr[j], arr[k]));
-//                        found = true;
-//                    }
-//                    else
-//                    {
-//                        set.put(s - arr[i] - arr[j], new Pair(arr[i],arr[i]));
-//                    }
+                int x = s - sum;
+                sums.put(sum, new Pair(i,j));
+                if (sums.containsKey(x)) {
+//                    set.put(sum, new Pair(i,j));
+//                    pairMaps.put(new Pair(i,j), sum);
+                    fourssums.add(new Four(sums.get(x).i1,sums.get(x).i2,i,j));
+                } else {
+//                    sums.put(sum, new Pair(i,j));
+                }
+
+            }
+        }
+
+        List<Four> uniq = new ArrayList<>();
+
+        for (Four f:
+             fourssums) {
+            if (f.a != f.b && f.a != f.c && f.a != f.d && f.b != f.c && f.b != f.d && f.c != f.d) {
+                uniq.add(new Four(arr[f.a], arr[f.b], arr[f.c], arr[f.d] ));
             }
         }
 

@@ -1,19 +1,2 @@
-11
-a a a a a a a a a a
-a a a a a a a a b
-a a a a a b
-a a a
-a a a a a a a a a
-a a
-a
-a a a a a a a a a a
-a a a a a a
-a a a a
-a a a a a a a a a a
-5
-bb
-a b
-bb
-a b
-a
-b
+2
+0 1

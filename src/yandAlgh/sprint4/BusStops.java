@@ -43,16 +43,16 @@ public class BusStops {
     }
 
     static class Coord {
-        long x;
-        long y;
+        int x;
+        int y;
 
         public Coord(int x,int y) {
             this.x = x;
             this.y = y;
         }
 
-        double getDist(Coord other) {
-            double d = Math.sqrt((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y));
+        long getDist(Coord other) {
+            long d = ((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y));
             return d;
         }
 
