@@ -2,6 +2,7 @@ package yandAlgh.sprint4;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -25,21 +26,43 @@ public class BusStops {
 
 //        BusStop[] stops = new BusStop[n];
 
-        for (int i = 0; i < n; i++) {
+//        int max = Integer.MAX_VALUE;
+
+        HashMap<ExitAndCoord, Boolean> map= new HashMap<>();
+
+        for (int i = 0; i < m; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
             Coord coord = new Coord(Integer.parseInt(tokenizer.nextToken()),Integer.parseInt(tokenizer.nextToken()) );
 //            stops[i] = new BusStop(coord);
             for (Exit ex:
                  exits) {
-                if (coord.getDist(ex.coord) <= 20.0) {
-                    ex.busses++;
+                ExitAndCoord exitAndCoord = new ExitAndCoord(ex, coord);
+                if (map.containsKey(exitAndCoord)) {
+                    boolean in = map.get(exitAndCoord);
+                    if (in) ex.busses++;
+                } else {
+                    boolean in = coord.isInRadius(ex.coord);
+                    map.put(exitAndCoord, in);
+                    if (in) {
+                        ex.busses++;
+                    }
                 }
             }
         }
 
-        Arrays.sort(exits);
+//        Arrays.sort(exits);
 
-        System.out.println(exits[0].id+1);
+        int max = Integer.MIN_VALUE;
+        int idM = Integer.MIN_VALUE;
+        for (Exit ex:
+             exits) {
+            if (ex.busses > max) {
+                max = ex.busses;
+                idM = ex.id + 1;
+            }
+        }
+
+        System.out.println(idM);
     }
 
     static class Coord {
@@ -52,8 +75,28 @@ public class BusStops {
         }
 
         long getDist(Coord other) {
-            long d = ((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y));
+            long x2 = (x-other.x)*(x-other.x);
+            long y2 = (y-other.y)*(y-other.y);
+            long d = x2 + y2;
             return d;
+        }
+
+        boolean isInRadius(Coord other) {
+            long dx = x-other.x;
+            long dy = y-other.y;
+            long x2 = dx*dx;
+            long y2 = dy*dy;
+            if (x2 > 400 || dy > 400) {
+                return false;
+            }
+            else {
+                long d = x2 + y2;
+                if (d <= 400) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
 
         @Override
@@ -68,6 +111,31 @@ public class BusStops {
         @Override
         public int hashCode() {
             return Objects.hash(x, y);
+        }
+    }
+
+    static class ExitAndCoord {
+        Exit exit;
+
+        Coord coord;
+
+        ExitAndCoord(Exit exit, Coord coord) {
+            this.exit = exit;
+            this.coord = coord;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ExitAndCoord)) return false;
+            ExitAndCoord that = (ExitAndCoord) o;
+            return Objects.equals(exit, that.exit) &&
+                    Objects.equals(coord, that.coord);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(exit, coord);
         }
     }
 
