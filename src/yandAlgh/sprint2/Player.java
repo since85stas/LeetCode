@@ -3,7 +3,7 @@ package yandAlgh.sprint2;
 import java.util.*;
 
 enum States {
-    ATTACK, DEFENCE, FLIPENDO
+    ATTACK, DEFENCE, FLIPENDO, ACCIO
 }
 
 enum AttackSubStates {
@@ -119,6 +119,10 @@ class Player {
                             break;
                         }
                     }
+                }
+                if (magic >=30) {
+                    myWizard.state.state = States.ACCIO;
+                    myWizard.state.goal = myGoal.getNearestSnaffle();
                 }
             }
         }
@@ -453,6 +457,9 @@ class Player {
 //                    System.out.println("MOVE " + (int) state.goalPos.x + " " + (int) state.goalPos.y + " " + "150 " + state.goal.id) ;
 //                    magic = magic - 20;
                     break;
+                case ACCIO:
+                    System.out.println("ACCIO " + state.goal.id + " " + state.goalPos);
+                    break;
             }
             magic++;
             return "";
@@ -490,6 +497,19 @@ class Player {
                 down = new Entity(-1, (int) center.pos.x, (int) center.pos.y + 2000, 0, 0, 300);
                 innerLine = new Line(top.pos, down.pos);
             }
+        }
+
+        Snaffle getNearestSnaffle() {
+            int dist = Integer.MAX_VALUE;
+            Snaffle near = null;
+            for (Snaffle snaffle:
+                 snaffles) {
+                if (snaffle.getDistance(center) < dist) {
+                    dist = snaffle.getDistance(center);
+                    near = snaffle;
+                }
+            }
+            return near;
         }
     }
 
