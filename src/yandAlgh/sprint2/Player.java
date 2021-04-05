@@ -43,6 +43,7 @@ class Player {
             int myMagic = in.nextInt();
             int opponentScore = in.nextInt();
             int opponentMagic = in.nextInt();
+            magic = myMagic;
             int entities = in.nextInt(); // number of entities still in game
             for (int i = 0; i < entities; i++) {
                 int entityId = in.nextInt(); // entity identifier
@@ -91,13 +92,33 @@ class Player {
             myWizard.state.state = States.ATTACK;
             myWizard.subState = AttackSubStates.MOVING;
 
-            int bludgId = -1;
-            for (Bludger bludger :
-                    bludgers) {
-                if (bludger.isEntityCollide(myWizard, 10)) {
-                    bludgId = bludger.id;
-                    myWizard.subState = AttackSubStates.AVOIDING;
-                    break;
+//            int bludgId = -1;
+//            for (Bludger bludger :
+//                    bludgers) {
+//                if (bludger.isEntityCollide(myWizard, 10)) {
+//                    bludgId = bludger.id;
+//                    myWizard.subState = AttackSubStates.AVOIDING;
+//                    break;
+//                }
+//            }
+            if (!myWizard.hasBall) {
+                if (magic >= 20) {
+                    Line goalLine = enemyGoal.innerLine;
+
+                    for (Snaffle snaffle :
+                            snaffles) {
+                        Line betweenLine = new Line(myWizard.pos, snaffle.pos).extendLine(12000);
+                        Position inters = goalLine.isIntersect(betweenLine);
+                        if (inters != null) {
+                            myWizard.state.state = States.FLIPENDO;
+                            myWizard.state.goal = snaffle;
+                            myWizard.state.goalPos = inters;
+
+//                            magic = magic - 20;
+
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -273,18 +294,20 @@ class Player {
             return new Line(a, new Position(x2, y2));
         }
 
-        Position isIntersect(Line other) {
-            double a1 = this.a.y - this.b.y;
+        Position isIntersectOld(Line other) {
+            double a1 = this.b.y - this.a.y;
 
-            double b1 = this.a.x - this.b.x;
+            double b1 = this.b.x - this.a.x;
 
             double c1 = a1 * (this.a.x) + b1 * (this.a.y);
 
+            double c11 = a1 * (this.b.x) + b1 * (this.b.y);
+
             // Линия CD представлена как a2x + b2y = c2
 
-            double a2 = other.a.y - other.b.y;
+            double a2 = other.b.y - other.a.y;
 
-            double b2 = other.a.x - other.b.x;
+            double b2 = other.b.x - other.a.x;
 
             double c2 = a2 * (other.a.x) + b2 * (other.a.y);
 
@@ -296,6 +319,37 @@ class Player {
                 double y = (a1 * c2 - a2 * c1) / determinant;
                 return new Position(x, y);
             }
+        }
+
+        Position isIntersect(Line other)
+        {
+            Position dir1 = new Position(b.x - a.x, b.y - a.y);
+            Position dir2 = new Position(other.b.x - other.a.x, other.b.y - other.a.y);
+
+            //считаем уравнения прямых проходящих через отрезки
+            double a1 = -dir1.y;
+            double b1 = +dir1.x;
+            double d1 = -(a1*a.x + b1*a.y);
+
+            double a2 = -dir2.y;
+            double b2 = +dir2.x;
+            double d2 = -(a2*other.a.x + b2*other.a.y);
+
+            //подставляем концы отрезков, для выяснения в каких полуплоскотях они
+            double seg1_line2_start = a2*a.x + b2*a.y + d2;
+            double seg1_line2_end = a2*b.x + b2*b.y + d2;
+
+            double seg2_line1_start = a1*other.a.x + b1*other.a.y + d1;
+            double seg2_line1_end = a1*other.b.x + b1*other.b.y + d1;
+
+            //если концы одного отрезка имеют один знак, значит он в одной полуплоскости и пересечения нет.
+            if (seg1_line2_start * seg1_line2_end >= 0 || seg2_line1_start * seg2_line1_end >= 0)
+                return null;
+
+            double u = seg1_line2_start / (seg1_line2_start - seg1_line2_end);
+//        *out_intersection =  start1 + u*dir1;
+
+            return new Position(a.x + u*dir1.x,a.y + u*dir1.y);
         }
 
         @Override
@@ -317,6 +371,8 @@ class Player {
         States state;
         Entity goal;
         Entity enemy;
+
+        Position goalPos;
 
         public WState() {
 
@@ -381,16 +437,21 @@ class Player {
 
                         // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
                         // i.e.: "MOVE x y thrust" or "THROW x y power"
-                        Line ext = new Line(pos, nearShaff.pos).extendLine(10000);
+                        Line ext = new Line(pos, nearShaff.pos);
 
 //                        System.out.println("MOVE " + nearShaff.pos.x + " " + nearShaff.pos.y + " " + "150 " + subState.name());
-                        System.out.println("MOVE " + (int) ext.b.x + " " + (int) ext.b.y + " " + "150 " + subState.name());
+                        System.out.println("MOVE " + (int) ext.b.x + " " + (int) ext.b.y + " " + "150 " + magic) ;
                     } else if (hasBall) {
-                        System.out.println("THROW " + (int) enemyGoal.center.pos.x + " " + (int) enemyGoal.center.pos.y + " " + "500 " + id);
+                        System.out.println("THROW " + (int) enemyGoal.center.pos.x + " " + (int) enemyGoal.center.pos.y + " " + "500");
                     }
                     break;
                 case DEFENCE:
 //                    System.out.println("OBLIVIATE " + id);
+                    break;
+                case FLIPENDO:
+                    System.out.println("FLIPENDO " + state.goal.id + " " + state.goalPos);
+//                    System.out.println("MOVE " + (int) state.goalPos.x + " " + (int) state.goalPos.y + " " + "150 " + state.goal.id) ;
+//                    magic = magic - 20;
                     break;
             }
             magic++;

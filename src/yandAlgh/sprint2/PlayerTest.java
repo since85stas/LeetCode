@@ -140,7 +140,27 @@ class PlayerTest {
         Player.Line line2 = new Player.Line(new Player.Position(0,-1), new Player.Position(0,1));
         Player.Position inter = line.isIntersect(line2);
 
-//        assertEquals(true,new Player.Line(new Player.Position(0,0), new Player.Position(-3,3)).equals(ext));
+        assertEquals(true,line.isIntersect(line2).equals(new Player.Position(0,0)));
+        System.out.println("");
+    }
+
+    @Test
+    public void intersectLineTest2() {
+        Player.Line line = new Player.Line(new Player.Position(2,0), new Player.Position(0,2));
+        Player.Line line2 = new Player.Line(new Player.Position(0,0), new Player.Position(4,4));
+        Player.Position inter = line.isIntersect(line2);
+
+        assertEquals(true,inter.equals(new Player.Position(1,1)));
+        System.out.println("");
+    }
+
+    @Test
+    public void intersectLineTest3() {
+        Player.Line line = new Player.Line(new Player.Position(2,0), new Player.Position(0,2));
+        Player.Line line2 = new Player.Line(new Player.Position(0,0), new Player.Position(-4,-4));
+        Player.Position inter = line.isIntersect(line2);
+
+//        (true,inter.equals(null));
         System.out.println("");
     }
 }
