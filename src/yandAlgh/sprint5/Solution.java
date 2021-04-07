@@ -1,52 +1,59 @@
-import java.util.LinkedList;
-import java.util.Queue;
+package yandAlgh.sprint5;
 
 public class Solution {
 
-    public static void main(String[] args) {
-        System.out.println("test");
+    public static int siftUp(int[] heap, int idx) {
+
+
+
+        return 0;
     }
 
-//    public static int treeSolution(Node head) {
+//    public static boolean treeSolution(Node head) {
+//        return isBalanced(head);
+//    }
 //
-//        int max = Integer.MIN_VALUE;
+//    /* Возвращает true, если двоичное дерево с корнем в качестве корня сбалансировано по высоте */
 //
-//        Queue<Node> queue = new LinkedList<>();
+//    static boolean isBalanced(Node node)
+//    {
+//        int lh; /* для высоты левого поддерева */
 //
-//        queue.add(head);
+//        int rh; /* для высоты правого поддерева */
 //
-//        while (!queue.isEmpty()) {
-//            Node last = queue.poll();
-//            if (last.value > max) {
-//                max = last.value;
-//            }
-//            if (last.left != null) queue.add(last.left);
-//            if (last.right != null) queue.add(last.right);
-//        }
+//        /* Если дерево пусто, вернуть true */
+//        if (node == null)  return true;
 //
-//        return max;
+//        /* Получить высоту левого и правого поддеревьев */
+//        lh = height(node.left);
+//        rh = height(node.right);
+//        if (Math.abs(lh - rh) <= 1
+//                && isBalanced(node.left)
+//                && isBalanced(node.right))
+//
+//            return true;
+//        /* Если мы достигаем здесь, то дерево не сбалансировано по высоте */
+//        return false;
+//    }
+//
+//
+//
+//    /* ПОЛЕЗНЫЕ ФУНКЦИИ ДЛЯ ТЕСТИРОВАНИЯ isBalanced () ФУНКЦИЯ */
+//            /* Функция вычисляет «высоту» дерева. Высота это
+//    количество узлов вдоль самого длинного пути от корневого узла
+//    вплоть до самого дальнего листового узла. */
+//    static int height(Node node)
+//    {
+//        /* базовое дерево пусто */
+//        if (node == null)
+//            return 0;
+//
+//        /* Если дерево не пустое, то высота = 1 + максимум слева
+//        высота и правая высота */
+//        return 1 + Math.max(height(node.left), height(node.right));
+//
 //    }
 
-    public static boolean treeSolution(Node head) {
-//                int max = Integer.MIN_VALUE;
-
-        Queue<Node> queue = new LinkedList<>();
-
-        queue.add(head);
-
-        while (!queue.isEmpty()) {
-            Node last = queue.poll();
-            if (last.left != null && last.left.value >= last.value) {
-                return false;
-            }
-            if (last.right != null && last.right.value <= last.value) {
-                return false;
-            }
-            if (last.left != null) queue.add(last.left);
-            if (last.right != null) queue.add(last.right);
-        }
-        return true;
-    }
 
 //    public static class Node {
 //        int value;
@@ -59,4 +66,5 @@ public class Solution {
 //            left = null;
 //        }
 //    }
+
 }

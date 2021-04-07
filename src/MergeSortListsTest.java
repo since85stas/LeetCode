@@ -19,9 +19,9 @@ public class MergeSortListsTest {
         list2 = new Creator(arr2).create();
     }
 
-    @Test
-    public void test1() {
-        Solution solution = new Solution();
-        assertEquals(solution.mergeTwoLists(list1, list2),new Creator(new int[] {4,3,2,1}).create());
-    }
+//    @Test
+//    public void test1() {
+//        Solution1 solution1 = new Solution1();
+//        assertEquals(solution1.mergeTwoLists(list1, list2),new Creator(new int[] {4,3,2,1}).create());
+//    }
 }

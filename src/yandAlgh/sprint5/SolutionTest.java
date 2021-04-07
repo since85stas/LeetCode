@@ -9,17 +9,17 @@ class SolutionTest {
     @Test
     void treeSolution() {
 
-         head = new Solution.Node(3);
+        Solution.Node head = new Solution.Node(7);
 
-        head.left = new Solution.Node(5);
+        head.left = new Solution.Node(1);
 
-        head.right = new Solution.Node(11);
+        head.right = new Solution.Node(8);
 
-        head.left.left = new Solution.Node(0);
+//        head.right.left = new Solution.Node(8);
 
-        head.left.right = new Solution.Node(55);
+        boolean res =Solution.treeSolution(head);
 
-        Solution.treeSolution(head);
+        System.out.println(res);
 
     }
 }
