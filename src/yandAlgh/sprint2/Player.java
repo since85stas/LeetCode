@@ -10,6 +10,10 @@ enum AttackSubStates {
     MOVING, AVOIDING
 }
 
+enum DefSubStates {
+    MOVING, PATROLLING, SHIELDING
+}
+
 /**
  * Grab Snaffles and try to throw them through the opponent's goal!
  * Move towards a Snaffle and use your team id to determine where you need to throw it.
@@ -32,10 +36,10 @@ class Player {
         int myTeamId = in.nextInt(); // if 0 you need to score on the right of the map, if 1 you need to score on the left
         enemyGoal = new Goal(myTeamId);
         myGoal = new Goal(Math.abs(myTeamId - 1));
+        myTeam = new ArrayList<>();
         // game loop
         while (true) {
             snaffles = new ArrayList<>();
-            myTeam = new ArrayList<>();
             enemyTeam = new ArrayList<>();
             bludgers = new ArrayList<>();
 
@@ -54,8 +58,21 @@ class Player {
                 int vy = in.nextInt(); // velocity
                 int state = in.nextInt(); // 1 if the wizard is holding a Snaffle, 0 otherwise
                 if (entityType.equals("WIZARD")) {
-                    Wizard wizard = new Wizard(entityId, state, x, y, vx, vy);
-                    myTeam.add(wizard);
+                    if (myTeam.size() < 2) {
+                        Wizard wizard = new Wizard(entityId, state, x, y, vx, vy);
+                        myTeam.add(wizard);
+                    } else {
+                        for (Wizard wiz :
+                                myTeam) {
+                            if (wiz.id == entityId) {
+                                wiz.pos.x = x;
+                                wiz.pos.y = y;
+                                wiz.v.x = vx;
+                                wiz.v.y = vy;
+                                wiz.hasBall = state==1;
+                            }
+                        }
+                    }
                 } else if (entityType.equals("SNAFFLE")) {
                     Snaffle snaffle = new Snaffle(entityId, x, y, vx, vy);
                     snaffles.add(snaffle);
@@ -89,18 +106,14 @@ class Player {
         for (int i = 0; i < 2; i++) {
             Wizard myWizard = myTeam.get(i);
 
-            myWizard.state.state = States.ATTACK;
-            myWizard.subState = AttackSubStates.MOVING;
+            if (i == 0) {
+                myWizard.state.state = States.ATTACK;
+                myWizard.subState = AttackSubStates.MOVING;
+            }
+            if (i == 1) {
+                myWizard.state.state = States.DEFENCE;
+            }
 
-//            int bludgId = -1;
-//            for (Bludger bludger :
-//                    bludgers) {
-//                if (bludger.isEntityCollide(myWizard, 10)) {
-//                    bludgId = bludger.id;
-//                    myWizard.subState = AttackSubStates.AVOIDING;
-//                    break;
-//                }
-//            }
             if (!myWizard.hasBall) {
                 if (magic >= 20) {
                     Line goalLine = enemyGoal.innerLine;
@@ -113,9 +126,6 @@ class Player {
                             myWizard.state.state = States.FLIPENDO;
                             myWizard.state.goal = snaffle;
                             myWizard.state.goalPos = inters;
-
-//                            magic = magic - 20;
-
                             break;
                         }
                     }
@@ -389,13 +399,19 @@ class Player {
         WState state = new WState();
 
         AttackSubStates subState = AttackSubStates.MOVING;
+        DefSubStates defSubStates = DefSubStates.PATROLLING;
 
         boolean hasBall;
+
+        byte partolDir;
 
         public Wizard(int id, int state, int x, int y, int vx, int vy) {
             super(id, x, y, vx, vy, 400);
             this.id = id;
             hasBall = state == 1;
+
+            if (y < 3750) partolDir = 1;
+            else partolDir = -1;
         }
 
         Entity getNearestSnaff() {
@@ -432,12 +448,12 @@ class Player {
                 case ATTACK:
                     if (!hasBall) {
                         Entity nearShaff = getNearestSnaff();
-                        if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
-                            int finalLastSnaffId = lastSnaffId;
-                            snaffles.removeIf(it -> it.id == finalLastSnaffId);
-                            nearShaff = getNearestSnaff();
-                        }
-                        lastSnaffId = nearShaff.id;
+//                        if (snaffles.size() > 1 && nearShaff.id == lastSnaffId) {
+//                            int finalLastSnaffId = lastSnaffId;
+//                            snaffles.removeIf(it -> it.id == finalLastSnaffId);
+//                            nearShaff = getNearestSnaff();
+//                        }
+//                        lastSnaffId = nearShaff.id;
 
                         // Edit this line to indicate the action for each wizard (0 ≤ thrust ≤ 150, 0 ≤ power ≤ 500)
                         // i.e.: "MOVE x y thrust" or "THROW x y power"
@@ -450,6 +466,26 @@ class Player {
                     }
                     break;
                 case DEFENCE:
+                    switch (defSubStates) {
+                        case PATROLLING:
+
+                            if (partolDir == 1) {
+                                System.out.println("MOVE " + (int) pos.x + " " + (int) (pos.y + 400) + " 100 " + partolDir);
+                            } else if (partolDir == -1) {
+                                System.out.println("MOVE " + (int) pos.x + " " + (int) (pos.y - 400) + " 100 " + partolDir);
+                            }
+                            double delDown = pos.y - myGoal.down.pos.y;
+                            System.err.println("" + pos.y + " " + myGoal.down.pos.y + " " + delDown);
+                            if (delDown > -800 && partolDir == 1) {
+                                partolDir = -1;
+                            }
+                            double delUp = pos.y - myGoal.top.pos.y;
+                            System.err.println("" + pos.y + " " + myGoal.top.pos.y + " " + delUp);
+                            if ( delUp < 800  && partolDir == -1 ) {
+                                partolDir = 1;
+                            }
+                            break;
+                    }
 //                    System.out.println("OBLIVIATE " + id);
                     break;
                 case FLIPENDO:
@@ -463,6 +499,19 @@ class Player {
             }
             magic++;
             return "";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Wizard)) return false;
+            Wizard wizard = (Wizard) o;
+            return id == wizard.id;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
         }
     }
 
