@@ -1,0 +1,6 @@
+5
+alla 0 4
+gena 0 6
+gosha 0 2
+rita 0 2
+timofey 0 4
