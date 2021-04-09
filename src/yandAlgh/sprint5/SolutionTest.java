@@ -33,7 +33,7 @@ class SolutionTest {
 
 //        Solution.Node n = Solution.RMR(head);
 
-        Solution.Node res =Solution.remove(head, 11);
+        Solution.Node res =Solution.remove(head, 8);
 
 //        int[] arr = new int[] {0, 12, 6, 8,3,15,7};
 

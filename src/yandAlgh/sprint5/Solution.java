@@ -13,17 +13,42 @@ public class Solution {
         // находим родителя узла
         Node delParent = findParent(root, key);
 
-        if (delParent == null)
+        if (delParent != null) {
 
-        // если у удаляемого нет потомков, значит мы можем просто удалить его, для этого у родителя заменяем его ссылку на null
-        if (toDel.getLeft() == null && toDel.getRight() == null) {
-            if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(null);
-            else delParent.setRight(null);
-            return root;
-        } else
+            // если у удаляемого нет потомков, значит мы можем просто удалить его, для этого у родителя заменяем его ссылку на null
+            if (toDel.getLeft() == null && toDel.getRight() == null) {
+                if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(null);
+                else delParent.setRight(null);
+                return root;
+            } else
             // в противном случае ищем ему замену
             {
 
+                // находим замену узлу
+                Node change = findChange(toDel, key);
+
+                // находим родителя замены
+                Node changeParent = findParent(root, change.getValue());
+
+                // у родителя заменяем старое место на null
+//            if (changeParent.getLeft() != null && changeParent.getLeft().getValue() == change.getValue()) changeParent.setLeft(null);
+//            else changeParent.setRight(null);
+
+                // если у заменяемого элемента потоков не было, то неучтенных вершин не осталось, просто меняем ссылки
+                if (change.getLeft() != null) {
+                    changeParent.setLeft(change.getLeft());
+                } else {
+                    changeParent.setRight(change.getRight());
+                }
+
+                if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(change);
+                else delParent.setRight(change);
+
+                change.setLeft(toDel.getLeft());
+                change.setRight(toDel.getRight());
+                return root;
+            }
+        } else {
             // находим замену узлу
             Node change = findChange(toDel, key);
 
@@ -41,11 +66,14 @@ public class Solution {
                 changeParent.setRight(change.getRight());
             }
 
-            if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(change);
-            else delParent.setRight(change);
+            root = new Node(null, null, change.getValue());
 
-            change.setLeft(toDel.getLeft());
-            change.setRight(toDel.getRight());
+            root.setLeft(changeParent);
+
+            root.setRight(toDel.getRight());
+
+//            change.setLeft(toDel.getLeft());
+//            change.setRight(toDel.getRight());
             return root;
         }
     }
