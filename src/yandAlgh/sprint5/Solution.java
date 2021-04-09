@@ -1,128 +1,117 @@
 package yandAlgh.sprint5;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Solution {
 
-//    public static int siftUp(int[] heap, int idx) {
-//
-//        if (idx == 1) {
-//            return idx;
-//        }
-//        int parent = idx/2;
-//
-//        if (heap[parent] < heap[idx]) {
-//            int temp = heap[parent];
-//            heap[parent] = heap[idx];
-//            heap[idx] = temp;
-//            idx = siftUp(heap, parent);
-//        }
-//        return idx;
-//    }
+    public static Node remove(Node root, int key) {
 
-    public static int siftDown(int[] heap, int idx) {
-        // your code
-        int left = 2 * idx;
-        int right = 2 * idx + 1;
-        int index_largest = idx;
-        if (heap.length <= left || heap.length == 2) {
-            return idx;
-        }
-        if ( right < heap.length && heap[left] < heap[right]) {
-            index_largest = right;
-        } else {
-            index_largest = left;
-        }
+        // находим узел для удаления
+        Node toDel = find(root, key);
 
-        if (heap[idx] < heap[index_largest]) {
-            int temp = heap[index_largest];
-            heap[index_largest] = heap[idx];
-            heap[idx] = temp;
-            idx = siftDown(heap, index_largest);
+        // если такого узла в дереве нет то ничего не меняем
+        if (toDel == null) return root;
+
+        // находим родителя узла
+        Node delParent = findParent(root, key);
+
+        if (delParent == null)
+
+        // если у удаляемого нет потомков, значит мы можем просто удалить его, для этого у родителя заменяем его ссылку на null
+        if (toDel.getLeft() == null && toDel.getRight() == null) {
+            if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(null);
+            else delParent.setRight(null);
+            return root;
+        } else
+            // в противном случае ищем ему замену
+            {
+
+            // находим замену узлу
+            Node change = findChange(toDel, key);
+
+            // находим родителя замены
+            Node changeParent = findParent(root, change.getValue());
+
+            // у родителя заменяем старое место на null
+//            if (changeParent.getLeft() != null && changeParent.getLeft().getValue() == change.getValue()) changeParent.setLeft(null);
+//            else changeParent.setRight(null);
+
+            // если у заменяемого элемента потоков не было, то неучтенных вершин не осталось, просто меняем ссылки
+            if (change.getLeft() != null) {
+                changeParent.setLeft(change.getLeft());
+            } else {
+                changeParent.setRight(change.getRight());
+            }
+
+            if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(change);
+            else delParent.setRight(change);
+
+            change.setLeft(toDel.getLeft());
+            change.setRight(toDel.getRight());
+            return root;
         }
-        return idx;
     }
 
-//    public static boolean treeSolution(Node head) {
-//
-//        return anagr(head);
-//    }
+    private static Node find(Node root , int key) {
+        if (root.getValue() == key) {
+            return root;
+        }
+        if (root.getLeft() != null && key < root.getValue()) {
+            return find(root.getLeft(), key);
+        }
+        if (root.getRight() != null && key >= root.getValue()){
+            return find(root.getRight(), key);
+        }
+        return null;
+    }
 
-    /* Возвращает true, если двоичное дерево с корнем в качестве корня сбалансировано по высоте */
+    private static Node findParent(Node root , int key) {
+        if (root.getValue() == key) {
+            return null;
+        }
+        if (root.getLeft() != null && key < root.getValue()) {
+            if (root.getLeft().getValue() == key) return root;
+            return findParent(root.getLeft(), key);
+        }
+        if (root.getRight() != null && key >= root.getValue()){
+            if (root.getRight().getValue() == key) return root;
+            return findParent(root.getRight(), key);
+        }
+        return null;
+    }
 
-//    static boolean isBalanced(Node node)
-//    {
-//        int lh; /* для высоты левого поддерева */
-//
-//        int rh; /* для высоты правого поддерева */
-//
-//        /* Если дерево пусто, вернуть true */
-//        if (node == null)  return true;
-//
-//        /* Получить высоту левого и правого поддеревьев */
-//        lh = height(node.left);
-//        rh = height(node.right);
-//        if (Math.abs(lh - rh) <= 1
-//                && isBalanced(node.left)
-//                && isBalanced(node.right)) {}
-//
-////            return true;
-//        /* Если мы достигаем здесь, то дерево не сбалансировано по высоте */
-//        return Math.max(lh, rh);
-//    }
-//    static List<Integer> lefta = new ArrayList<>();
-//    static List<Integer> righta = new ArrayList<>();
-//
-//    static boolean anagr(Node head) {
-//        if (head.left != null) LMR(head.left);
-//        if (head.right != null) RMR(head.right);
-//        return lefta.equals(righta);
-//    }
-//
-//    static void LMR(Node node) {
-//        if (node.left != null) LMR(node.left);
-////        System.out.println(node.value);
-//        lefta.add(node.value);
-//        if (node.right != null) LMR(node.right);
-//    }
-//
-//    static void RMR(Node node) {
-//        if (node.right != null) RMR(node.right);
-////        System.out.println(node.value);
-//        righta.add(node.value);
-//        if (node.left != null) RMR(node.left);
-//    }
+    private static Node findChange(Node toDel, int key) {
+        if (toDel.getLeft() != null) {
+            return getRightest(toDel.getLeft());
+        } else {
+            return getLeftest(toDel.getRight());
+        }
+    }
 
-    /* ПОЛЕЗНЫЕ ФУНКЦИИ ДЛЯ ТЕСТИРОВАНИЯ isBalanced () ФУНКЦИЯ */
-            /* Функция вычисляет «высоту» дерева. Высота это
-    количество узлов вдоль самого длинного пути от корневого узла
-    вплоть до самого дальнего листового узла. */
-//    static int height(Node node)
-//    {
-//        /* базовое дерево пусто */
-//        if (node == null)
-//            return 0;
-//
-//        int hl = height(node.left);
-//        int hr = height(node.right);
-//        /* Если дерево не пустое, то высота = 1 + максимум слева
-//        высота и правая высота */
-//        return 1 + Math.max(hl, hr);
-//
-//    }
+    static Node getRightest(Node node) {
+        if (node.getRight() != null) node = getRightest(node.getRight());
+        return node;
+    }
+
+    static Node getLeftest(Node node) {
+        if (node.getLeft() != null) node = getLeftest(node.getLeft());
+        return node;
+    }
 
 
-//    public static class Node {
-//        int value;
-//        Node left;
-//        Node right;
-//
-//        Node(int value) {
-//            this.value = value;
-//            right = null;
-//            left = null;
-//        }
-//    }
+    public static class Node {
+        Node left;
+        Node right;
+        int value;
+        public int getValue() {return value;}
+        public Node getRight() {return right;}
+        public Node getLeft() {return left;};
+        public void setValue(int value) {this.value= value;}
+        public void setRight(Node right) {this.right=right;};
+        public void setLeft(Node left) {this.left= left;};
+        public Node(Node left, Node right, int value) {
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+    }
 
 }
