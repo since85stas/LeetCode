@@ -26,61 +26,30 @@ public class Solution {
             return root;
         }
 
+        // в противном случае ищем ему замену
+        // находим замену узлу
         if (toDel.getLeft() != null && toDel.getRight() != null) {
-            if (delParent != null) {
-
-                // в противном случае ищем ему замену
-                // находим замену узлу
                 Node change = findChange(toDel, key);
 
                 // находим родителя замены
-                Node changeParent = findParent(root.left, change.getValue());
+                Node changeParent = findParent(root, change.getValue());
 
-                // у родителя заменяем старое место на null
-//            if (changeParent.getLeft() != null && changeParent.getLeft().getValue() == change.getValue()) changeParent.setLeft(null);
-//            else changeParent.setRight(null);
-
-                if (changeParent != null) {
-                    // если у заменяемого элемента потоков не было, то неучтенных вершин не осталось, просто меняем ссылки
-                    if (change.getLeft() != null) {
-                        changeParent.setLeft(change.getLeft());
+                if (changeParent == toDel) {
+                    toDel.setValue(change.getValue());
+                    toDel.setLeft(change.getLeft());
+                } else {
+                    // если у замены нет потомков то просто заменяем
+                    if (change.getLeft() == null) {
+                        changeParent.setRight(null);
+                        toDel.setValue(change.getValue());
                     } else {
-                        changeParent.setRight(change.getRight());
+                        changeParent.setRight(change.getLeft());
+                        toDel.setValue(change.getValue());
                     }
                 }
 
-                if (delParent.getLeft() != null && delParent.getLeft().getValue() == key) delParent.setLeft(change);
-                else delParent.setRight(change);
 
-                change.setLeft(toDel.getLeft());
-                change.setRight(toDel.getRight());
-                return root;
-            } else {
-                // находим замену узлу
-                Node change = findChange(toDel, key);
-
-                // находим родителя замены
-                Node changeParent = findParent(toDel.left, change.getValue());
-
-                // у родителя заменяем старое место на null
-//            if (changeParent.getLeft() != null && changeParent.getLeft().getValue() == change.getValue()) changeParent.setLeft(null);
-//            else changeParent.setRight(null);
-
-                if (changeParent != null) {
-                    // если у заменяемого элемента потоков не было, то неучтенных вершин не осталось, просто меняем ссылки
-                    if (change.getLeft() != null) {
-                        changeParent.setLeft(change.getLeft());
-                    } else {
-                        changeParent.setRight(change.getRight());
-                    }
-                }
-                root = new Node(null, null, change.getValue());
-                root.setRight(toDel.getRight());
-                return root;
-            }
-        }
-
-        if (toDel.getLeft() != null || toDel.getRight() != null) {
+        } else if (toDel.getLeft() != null || toDel.getRight() != null) {
             if (delParent != null) {
                 if (toDel.getLeft() != null) {
                     delParent.setLeft(toDel.getLeft());
@@ -132,11 +101,7 @@ public class Solution {
     }
 
     private static Node findChange(Node toDel, int key) {
-        if (toDel.getLeft() != null) {
-            return getRightest(toDel.getLeft());
-        } else {
-            return getLeftest(toDel.getRight());
-        }
+       return getRightest(toDel.getLeft());
     }
 
     static Node getRightest(Node node) {
@@ -167,8 +132,6 @@ public class Solution {
             return left;
         }
 
-        ;
-
         public void setValue(int value) {
             this.value = value;
         }
@@ -177,13 +140,9 @@ public class Solution {
             this.right = right;
         }
 
-        ;
-
         public void setLeft(Node left) {
             this.left = left;
         }
-
-        ;
 
         public Node(Node left, Node right, int value) {
             this.left = left;
