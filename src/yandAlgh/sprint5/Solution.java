@@ -48,7 +48,6 @@ public class Solution {
                     }
                 }
 
-
         } else if (toDel.getLeft() != null || toDel.getRight() != null) {
             if (delParent != null) {
                 if (toDel.getLeft() != null) {
