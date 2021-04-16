@@ -1,5 +1,3 @@
-package yandAlgh.sprint5;
-
 /**
  * Сам алгорим описан в теории. Сначала рассматриваем крайние случаи с вырожденными деревьями.
  * Затем, ищем замену для узла который надо удалить. Либо мамый правый элемент в левом поддереве, либо
@@ -8,13 +6,14 @@ package yandAlgh.sprint5;
  *
  * сложность алгоритма O(k) - глубины дерева
  *
- * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289745/
+ * успешная посылка https://contest.yandex.ru/contest/24810/run-report/50691515/
  */
 public class Solution {
 
     // ссылка на родителя для удаляемого
     static Node delParent;
 
+    // ссылка на родителя для замены
     static Node changeParent;
 
     public static Node remove(Node root, int key) {
@@ -31,7 +30,7 @@ public class Solution {
         // если удаляемый это вершина и потомком нет то вернем null
         if (toDel.equals(root) && toDel.getLeft() == null && toDel.getRight() == null) return null;
 
-        // родителя удаляемого узла
+        // для удобства переопределяем родителя удаляемого узла
         Node delParent = Solution.delParent;
 
         // если у удаляемого нет потомков, значит мы можем просто удалить его, для этого у родителя заменяем его ссылку на null
@@ -48,9 +47,8 @@ public class Solution {
                 // находим замену
                 Node change = findChange(toDel, changeParent);
 
-                // находим родителя замены
+                // для удобства переопределяем родителя замены
                 Node changeParent = Solution.changeParent;
-//                        = findParent(root, change.getValue());
 
                 // если получится что удаляемый элемент является родителем замены
                 // то в таком случае можем просто переопределить левое поддерево замены удаляемому
@@ -74,11 +72,13 @@ public class Solution {
                     }
                 }
         } else if (toDel.getRight() != null) {
+            // Здесь все аналогично только для правого поддерева
+
+            // находим замену
             Node change = findChange(toDel, changeParent);
 
-            // находим родителя замены
+            // для удобства переопределяем
             Node changeParent = Solution.changeParent;
-//                    = findParent(root, change.getValue());
 
             if (changeParent == toDel) {
                 toDel.setValue(change.getValue());
@@ -124,31 +124,24 @@ public class Solution {
         return null;
     }
 
-    private static Node findParent(Node root, int key) {
-        if (root.getValue() == key) {
-            return null;
-        }
-        if (root.getLeft() != null && key < root.getValue()) {
-            if (root.getLeft().getValue() == key) return root;
-            return findParent(root.getLeft(), key);
-        }
-        if (root.getRight() != null && key >= root.getValue()) {
-            if (root.getRight().getValue() == key) return root;
-            return findParent(root.getRight(), key);
-        }
-        return null;
-    }
-
+    /**
+     * Если есть левое поддерево то ищем там иначе в правой
+     * @param toDel - элемент которому ищем замену
+     * @param parent - ссылка на родителя
+     */
     private static Node findChange(Node toDel, Node parent) {
        if (toDel.getLeft() != null) {
-//           changeParent = toDel;
+           changeParent = toDel;
            return getRightest(toDel.getLeft(), parent);
        } else {
-//           changeParent = toDel;
+           changeParent = toDel;
            return getLeftest(toDel.getRight(), parent);
        }
     }
 
+    /**
+     * возвращает самую правуб вершину
+     */
     static Node getRightest(Node node, Node parent) {
         if (node.getRight() != null) {
             changeParent = node;
@@ -157,6 +150,9 @@ public class Solution {
         return node;
     }
 
+    /**
+     * возвращает самую левую вершину
+     */
     static Node getLeftest(Node node, Node parent) {
         if (node.getLeft() != null) {
             changeParent = node;
@@ -166,41 +162,41 @@ public class Solution {
         return node;
     }
 
-
-    public static class Node {
-        Node left;
-        Node right;
-        int value;
-
-        public int getValue() {
-            return value;
-        }
-
-        public Node getRight() {
-            return right;
-        }
-
-        public Node getLeft() {
-            return left;
-        }
-
-        public void setValue(int value) {
-            this.value = value;
-        }
-
-        public void setRight(Node right) {
-            this.right = right;
-        }
-
-        public void setLeft(Node left) {
-            this.left = left;
-        }
-
-        public Node(Node left, Node right, int value) {
-            this.left = left;
-            this.right = right;
-            this.value = value;
-        }
-    }
+    // для тестирования
+//    public static class Node {
+//        Node left;
+//        Node right;
+//        int value;
+//
+//        public int getValue() {
+//            return value;
+//        }
+//
+//        public Node getRight() {
+//            return right;
+//        }
+//
+//        public Node getLeft() {
+//            return left;
+//        }
+//
+//        public void setValue(int value) {
+//            this.value = value;
+//        }
+//
+//        public void setRight(Node right) {
+//            this.right = right;
+//        }
+//
+//        public void setLeft(Node left) {
+//            this.left = left;
+//        }
+//
+//        public Node(Node left, Node right, int value) {
+//            this.left = left;
+//            this.right = right;
+//            this.value = value;
+//        }
+//    }
 
 }
