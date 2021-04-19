@@ -62,6 +62,7 @@ public class Lectures {
                 adj[v] = new ArrayList<>();
             edges = new HashSet<>();
         }
+
         public boolean addEdge(int v, int w)
         {
             adj[v].add(w);
