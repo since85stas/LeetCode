@@ -1,3 +1,4 @@
+package yandAlgh.sprint5;
 /**
  * Сам алгорим описан в теории. Сначала рассматриваем крайние случаи с вырожденными деревьями.
  * Затем, ищем замену для узла который надо удалить. Либо мамый правый элемент в левом поддереве, либо
@@ -163,40 +164,40 @@ public class Solution {
     }
 
     // для тестирования
-//    public static class Node {
-//        Node left;
-//        Node right;
-//        int value;
-//
-//        public int getValue() {
-//            return value;
-//        }
-//
-//        public Node getRight() {
-//            return right;
-//        }
-//
-//        public Node getLeft() {
-//            return left;
-//        }
-//
-//        public void setValue(int value) {
-//            this.value = value;
-//        }
-//
-//        public void setRight(Node right) {
-//            this.right = right;
-//        }
-//
-//        public void setLeft(Node left) {
-//            this.left = left;
-//        }
-//
-//        public Node(Node left, Node right, int value) {
-//            this.left = left;
-//            this.right = right;
-//            this.value = value;
-//        }
-//    }
+    public static class Node {
+        Node left;
+        Node right;
+        int value;
+
+        public int getValue() {
+            return value;
+        }
+
+        public Node getRight() {
+            return right;
+        }
+
+        public Node getLeft() {
+            return left;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        public void setRight(Node right) {
+            this.right = right;
+        }
+
+        public void setLeft(Node left) {
+            this.left = left;
+        }
+
+        public Node(Node left, Node right, int value) {
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+    }
 
 }
