@@ -22,17 +22,13 @@ public class CompleteGraph {
             }
         }
 
-        StringBuilder builder = new StringBuilder();
         if (graph.V* (graph.V-1)/2 == graph.countEdge) System.out.println("YES");
         else System.out.println("NO");
-        System.out.println(builder.toString());
     }
 
     static class Graph
     {
         private final int V;
-
-        private final TreeSet<Integer>[] adj;
 
         private final HashSet<Edge> addedEdge;
 
@@ -41,21 +37,15 @@ public class CompleteGraph {
         public Graph(int V)
         {
             this.V = V;
-            adj = new TreeSet[V+1];
             addedEdge = new HashSet<>();
-            for (int v = 1; v < V+1; v++) {
-                adj[v] = new TreeSet<>();
-            }
         }
 
         public void addEdge(int v, int w)
         {
             Edge pr = new Edge(v,w);
-            Edge rev = new Edge(w,v);
 
-            if (!addedEdge.contains(pr) || !addedEdge.contains(rev)) {
-                adj[v].add(w);
-                adj[w].add(v);
+            if (!addedEdge.contains(pr)) {
+                Edge rev = new Edge(w,v);
 
                 addedEdge.add(pr);
                 addedEdge.add(rev);
@@ -63,9 +53,6 @@ public class CompleteGraph {
                 countEdge = countEdge+1;
             }
         }
-
-        public Iterable<Integer> adj(int v)
-        { return adj[v]; }
 
     }
 
@@ -78,10 +65,9 @@ public class CompleteGraph {
             this.v = v;
             this.w = w;
         }
-        public int from(
-
-        )
+        public int from()
         { return v; }
+
         public int to()
         { return w; }
 
