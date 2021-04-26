@@ -28,19 +28,57 @@ public class MaxOstov {
             }
         }
 
+        MaxST st = new MaxST(graph);
+
         StringBuilder builder = new StringBuilder();
         System.out.println(builder.toString());
     }
 
     private static class MaxST {
 
-        HashSet<Edge> added;
+//        HashSet<Integer> notAdded;
+        HashSet<Integer> added;
 
         EdgeWeightedGraph G;
 
+        long sum;
+
         public MaxST(EdgeWeightedGraph G) {
             this.G = G;
+
+            int v = 1;
+
             added = new HashSet<>();
+
+            PriorityQueue<Edge> queue = new PriorityQueue<>();
+
+            queue.addAll(G.adj[v]);
+
+            while (!G.vert.isEmpty() && !queue.isEmpty()) {
+//                G.vert.remove(v);
+
+                Edge max = queue.poll();
+
+                G.vert.remove(max.from());
+                G.vert.remove(max.to());
+
+//                queue.removeIf(it -> it.from() == max.from() && it.to() == max.to());
+
+                sum = sum + max.weight;
+
+                added.add(max.from());
+                added.add(max.to());
+
+                for (Edge e :
+                        G.adj(max.to())) {
+                    if ( !added.contains(e.to())) {
+                        queue.add(e);
+                    }
+                }
+            }
+
+            if (added.size() == G.V) System.out.println(sum);
+            else System.out.println("Oops! I did it again");
         }
 
         public void addVertex(Edge e) {
@@ -54,30 +92,28 @@ public class MaxOstov {
 
         private final List<Edge>[] adj;
 
-        HashSet<Edge> addedEdges = new HashSet<>();
+//        TreeSet<Edge> addedEdges = new HashMap<>();
+        HashSet<Integer> vert = new HashSet<>();
 
         int countEdg = 0;
 
         public EdgeWeightedGraph(int V)
         {
             this.V = V;
-            adj = (List<Edge>[]) new ArrayList[V];
-            for (int v = 0; v < V; v++)
+            adj = (List<Edge>[]) new List[V+1];
+            for (int v = 1; v < V+1; v++) {
                 adj[v] = new ArrayList<>();
+                vert.add(v);
+            }
         }
 
         public void addEdge(Edge e)
         {
-            if (!addedEdges.contains(e)) {
                 int v = e.from();
                 adj[v].add(e);
-
                 Edge rev = e.reverse();
-
                 adj[rev.v].add(rev);
-
                 countEdg = countEdg + 1;
-            }
         }
 
 
@@ -85,10 +121,10 @@ public class MaxOstov {
         { return adj[v]; }
     }
 
-    public static class Edge
+    public static class Edge implements Comparable<Edge>
     {
         private final int v, w;
-        private final int weight;
+        int weight;
         public Edge(int v, int w, int weight)
         {
             this.v = v;
@@ -120,6 +156,11 @@ public class MaxOstov {
         @Override
         public int hashCode() {
             return Objects.hash(v, w);
+        }
+
+        @Override
+        public int compareTo(Edge edge) {
+            return Integer.compare(edge.weight, this.weight);
         }
     }
 
