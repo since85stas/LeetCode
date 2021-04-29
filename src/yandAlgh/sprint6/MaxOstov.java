@@ -3,6 +3,16 @@ package yandAlgh.sprint6;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Создаем вспомогательный класс для игроков далее как написано в описании
+ * Сам алгорим описан в теории. Вкратце. Сначала добавляем в массив и следим за сохранением свойств пирамиды. Т.е.
+ * чтобы потомки были меньше родителя, просеиваем вверх. Затем начинаем забирать элементы от самого большого и на каждом шагу,
+ * возвращяем элементы в положение требуемое своиствами пирамиды, тоесть просеиваем вниз.
+ * <p>
+ * сложность алгоритма n*log(n)
+ * <p>
+ * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289745/
+ */
 public class MaxOstov {
 
     public static void main(String[] args) throws IOException {
@@ -22,9 +32,6 @@ public class MaxOstov {
             if (u != v) {
                 Edge edge = new Edge(u, v, w);
                 graph.addEdge(edge);
-
-//                Edge edger = new Edge(v, u, w);
-//                graph.addEdge(edger);
             }
         }
 
@@ -85,18 +92,25 @@ public class MaxOstov {
         { return adj[v]; }
     }
 
+    /**
+     * Вспомогательный класс определяющий ребро
+     * v - откуда редро, w - куда ребро,
+     */
     public static class Edge
     {
         private final int v, w;
         private final int weight;
+
         public Edge(int v, int w, int weight)
         {
             this.v = v;
             this.w = w;
             this.weight = weight;
         }
+
         public int from()
         { return v; }
+
         public int to()
         { return w; }
 

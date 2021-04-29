@@ -9,26 +9,67 @@ public class RailWays {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
         int n = Integer.parseInt(tokenizer.nextToken());
-        int m = Integer.parseInt(tokenizer.nextToken());
 
         Graph graph = new Graph(n);
 
-        for (int i = 1; i < m+1; i++) {
+        for (int i = 1; i < n; i++) {
             String readStr = reader.readLine();
             for (int j = 1; j < readStr.length()+1; j++) {
                 char curC = readStr.charAt(j-1);
                 if (curC == 'B') {
-                    Edge edge = new Edge(i, i+j, curC == 'B');
-                    graph.adj[i].add(edge);
+//                    Edge edge = new Edge(i, i+j);
+                    graph.adj[i].add(i+j);
                 } else {
-                    Edge edge = new Edge(i, i+j, curC == 'B');
-                    graph.adj[i].add(edge);
+//                    Edge edge = new Edge(i+j, i);
+                    graph.adj[i+j].add(i);
                 }
             }
         }
 
-        if (graph.V* (graph.V-1)/2 == graph.countEdge) System.out.println("YES");
-        else System.out.println("NO");
+        IsGraphValid validator = new IsGraphValid(graph);
+
+        if (validator.hasCycle) System.out.println("NO");
+        else System.out.println("YES");
+    }
+
+    static class IsGraphValid {
+
+        TreeSet<Integer> graySet = new TreeSet<>();
+        TreeSet<Integer> blackSet = new TreeSet<>();
+
+        boolean hasCycle;
+
+        public IsGraphValid(Graph g) {
+            while (!g.whiteSet.isEmpty()) {
+                Integer start = g.whiteSet.first();
+                boolean cycle = dfs(g, start);
+                if (cycle) {
+                    hasCycle = true;
+                    break;
+                }
+            }
+        }
+
+        private boolean dfs(Graph g, int v) {
+            g.whiteSet.remove(v);
+            graySet.add(v);
+            for (Integer w:
+                 g.adj[v]) {
+                if (blackSet.contains(w)) {
+                    continue;
+                }
+                if (graySet.contains(w)) {
+                    return true;
+                }
+                if (dfs(g,w)) {
+                    return true;
+                }
+            }
+            graySet.remove(v);
+            blackSet.add(v);
+            return false;
+        }
+
     }
 
     static class Graph
@@ -37,7 +78,9 @@ public class RailWays {
 
 //        private final HashSet<Edge> addedEdge;
 
-        private final List<Edge>[] adj;
+        private final List<Integer>[] adj;
+
+        TreeSet<Integer> whiteSet = new TreeSet<>();
 
         int countEdge = 0;
 
@@ -45,50 +88,18 @@ public class RailWays {
         {
             this.V = V;
             adj =  new ArrayList[V+1];
-            for (int v = 1; v < V+1; v++)
-                adj[v] = new ArrayList<Edge>();
+            for (int v = 1; v < V+1; v++) {
+                adj[v] = new ArrayList<Integer>(5000);
+                whiteSet.add(v);
+            }
         }
 
-        public void addEdge(int v, int w, boolean bType)
+        public void addEdge(int v, int w)
         {
-            Edge pr = new Edge(v,w, bType);
-            adj[v].add(pr);
+//            Edge pr = new Edge(v,w);
+            adj[v].add(w);
         }
 
-    }
-
-    public static class Edge
-    {
-        private final int v, w;
-
-        boolean bType;
-
-        public Edge(int v, int w, boolean isBi)
-        {
-            this.v = v;
-            this.w = w;
-            this.bType = isBi;
-        }
-        public int from()
-        { return v; }
-
-        public int to()
-        { return w; }
-
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof CompleteGraph.Edge)) return false;
-            Edge edge = (Edge) o;
-            return v == edge.v &&
-                    w == edge.w;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(v, w);
-        }
     }
 
 }
