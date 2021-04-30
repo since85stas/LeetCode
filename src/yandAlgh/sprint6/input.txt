@@ -1,5 +1,4 @@
-5
-RRRB
-BRR
-BR
-R
+4
+BBB
+RB
+B
