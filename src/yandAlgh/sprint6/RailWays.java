@@ -15,12 +15,15 @@ import java.util.*;
  */
 public class RailWays {
 
+    private static final String YES_ANSW = "YES";
+    private static final String NO_ANSW = "NO";
+
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
         int n = Integer.parseInt(tokenizer.nextToken());
 
-        Graph graph = new Graph(n);
+        final Graph graph = new Graph(n);
 
         for (int i = 1; i < n; i++) {
             String readStr = reader.readLine();
@@ -37,17 +40,17 @@ public class RailWays {
 
         IsGraphValid validator = new IsGraphValid(graph);
 
-        if (validator.hasCycle) System.out.println("NO");
-        else System.out.println("YES");
+        if (validator.isHasCycle()) System.out.println(NO_ANSW);
+        else System.out.println(YES_ANSW);
     }
 
     static class IsGraphValid {
 
         // массив хранения цветов
-        byte[] colors;
+        private byte[] colors;
 
         // хранит результат прохода
-        boolean hasCycle;
+        private boolean hasCycle;
 
 
         public IsGraphValid(Graph g) {
@@ -63,6 +66,10 @@ public class RailWays {
                     break;
                 }
             }
+        }
+
+        public boolean isHasCycle() {
+            return hasCycle;
         }
 
         /**
@@ -93,8 +100,11 @@ public class RailWays {
     }
 
     // класс для опеределния графа
-    static class Graph
+    private static class Graph
     {
+        // начальный размер списков
+        private static final int INIT_CAP = 5000;
+
         // число вершин
         private final int V;
 
@@ -110,7 +120,7 @@ public class RailWays {
             adj =  new ArrayList[V+1];
             for (int v = 1; v < V+1; v++) {
                 // так как скорее всего будет много граней сразу задаю начальное значение побольше
-                adj[v] = new ArrayList<Integer>(5000);
+                adj[v] = new ArrayList<Integer>(INIT_CAP);
                 whiteSet.add(v);
             }
         }

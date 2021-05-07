@@ -10,17 +10,17 @@ import java.util.*;
  * <p>
  * сложность алгоритма O(E*log(V))
  * <p>
- * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289745/
+ * успешная посылка https://contest.yandex.ru/contest/25070/run-report/51247453/
  */
 public class MaxOstov2 {
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-        int n = Integer.parseInt(tokenizer.nextToken());
-        int m = Integer.parseInt(tokenizer.nextToken());
+        final int n = Integer.parseInt(tokenizer.nextToken());
+        final int m = Integer.parseInt(tokenizer.nextToken());
 
-        EdgeWeightedGraph graph = new EdgeWeightedGraph(n);
+        final EdgeWeightedGraph graph = new EdgeWeightedGraph(n);
 
         for (int i = 0; i < m; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
@@ -149,6 +149,23 @@ public class MaxOstov2 {
         public int compareTo(Edge edge) {
             return Integer.compare(edge.weight, this.weight);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Edge)) return false;
+            Edge edge = (Edge) o;
+            return v == edge.v &&
+                    w == edge.w &&
+                    weight == edge.weight;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(v, w, weight);
+        }
     }
+
+
 
 }
