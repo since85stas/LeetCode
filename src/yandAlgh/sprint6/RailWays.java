@@ -4,10 +4,14 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * Решение задачи идиентично проверке существует ли в графе цикл или нет. Ребра типа B- считаем прямыми
+ * ребра типа R - обратные. Если цикла нет то сеть оптимальна.
+ * Для нахождения цикла проходимся вглубину по всем вершинам и окрашиваем цвета. Если при проходе
+ * встречается серая вершина, значит мы еще не закончили проход и следовательно существует цикл.
  * <p>
- * сложность алгоритма такая же как и прохода в глубину O(E + V) - от суммы ребер и вершин
+ * сложность алгоритма такая же как и прохода в глубину O(V*V) - квадрат числа вершин
  * <p>
- * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289745/
+ * успешная посылка https://contest.yandex.ru/contest/25070/run-report/51247319/
  */
 public class RailWays {
 
@@ -40,7 +44,7 @@ public class RailWays {
     static class IsGraphValid {
 
         // массив хранения цветов
-        Colors[] colors;
+        byte[] colors;
 
         // хранит результат прохода
         boolean hasCycle;
@@ -48,7 +52,7 @@ public class RailWays {
 
         public IsGraphValid(Graph g) {
 
-            colors = new Colors[g.V+1];
+            colors = new byte[g.V+1];
 
             // проходим в глубину по всем вершинам начиная с первой, если находим цикл в графе, то можно прерывать проход
             while (!g.whiteSet.isEmpty()) {
@@ -69,20 +73,20 @@ public class RailWays {
          */
         private boolean dfs(Graph g, int v) {
             g.whiteSet.remove(v);
-            colors[v] = Colors.GRAY;
+            colors[v] = 1;
             for (Integer w:
                  g.adj[v]) {
-                if (colors[w] == Colors.BLACK) {
+                if (colors[w] == 2) {
                     continue;
                 }
-                if (colors[w] == Colors.GRAY) {
+                if (colors[w] == 1) {
                     return true;
                 }
                 if (dfs(g,w)) {
                     return true;
                 }
             }
-            colors[v] = Colors.WHITE;
+            colors[v] = 2;
             return false;
         }
 
@@ -117,17 +121,6 @@ public class RailWays {
             adj[v].add(w);
         }
 
-    }
-
-    // класс для цветов
-    enum Colors {
-        WHITE(0), GRAY(1), BLACK(2);
-
-        byte val;
-
-        Colors(int i) {
-            this.val = (byte) i;
-        }
     }
 
 }
