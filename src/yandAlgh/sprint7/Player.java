@@ -1,9 +1,6 @@
 package yandAlgh.sprint7;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 class Player {
 
@@ -172,6 +169,8 @@ class Game {
     int mySun, opponentSun;
     int myScore, opponentScore;
     boolean opponentIsWaiting;
+    HashMap<Integer, Integer> treesSizes;
+
 
     public Game() {
         board = new ArrayList<>();
@@ -184,22 +183,66 @@ class Game {
     }
 
     public void getActionScores() {
+
+        countTreesSizes();
+
         for (Action action :
                 possibleActions) {
             switch (action.type) {
                 case Action.WAIT:
                     break;
                 case Action.COMPLETE:
-                    action.score += 10;
+                    if (day <19) {
+                        action.score = 0;
+                    } else {
+                        action.score = 5;
+                    }
                     break;
                 case Action.SEED:
-
+                    action.score = getCellByIndx(action.targetCellIdx).richness;
                     break;
                 case Action.GROW:
-                    action.score += getCellByIndx(action.targetCellIdx).richness;
+                    action.score = getCellByIndx(action.targetCellIdx).richness;
+                    action.score += getTreeById(action.targetCellIdx).size;
+                    if (getTreeById(action.targetCellIdx).size == getMinSize()) {
+                        action.score += 1;
+                    }
                     break;
             }
         }
+    }
+
+    public void countTreesSizes() {
+        treesSizes = new HashMap<>();
+        for (Tree tree :
+                trees) {
+            if (treesSizes.containsKey(tree.size)) {
+                treesSizes.put(tree.size, treesSizes.get(tree.size)+1);
+            } else {
+                treesSizes.put(tree.size, 1);
+            }
+        }
+    }
+
+    public int getMinSize() {
+        int minCount= -1;
+        int minsize = - 1;
+        for (Integer size :
+                treesSizes.keySet()) {
+            if (treesSizes.get(size) > minCount) {
+                minsize = size;
+                minCount = treesSizes.get(size);
+            }
+            }
+        return minsize;
+    }
+
+    public Tree getTreeById(int id) {
+        for (Tree tree :
+                trees) {
+            if (tree.cellIndex == id) return tree;
+        }
+        return null;
     }
 
     public Action getMaxScoreAction() {
