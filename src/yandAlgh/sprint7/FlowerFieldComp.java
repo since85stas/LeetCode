@@ -3,7 +3,7 @@ package yandAlgh.sprint7;
 import java.io.*;
 import java.util.StringTokenizer;
 
-public class FlowersField {
+public class FlowerFieldComp {
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
@@ -27,7 +27,7 @@ public class FlowersField {
             }
         }
 
-        if (n != 1 && m!=1) {
+        if (n != 1) {
             dp[1][m] = field[1][m];
 
             for (int i = 1; i <= n; i++) {
@@ -37,7 +37,6 @@ public class FlowersField {
             }
 
             System.out.println(dp[0][n]);
-//            System.out.println(1);
         } else {
             int sum = 0;
             for (int i = 0; i < m; i++) {
