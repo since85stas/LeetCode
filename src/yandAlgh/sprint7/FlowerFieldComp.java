@@ -27,23 +27,28 @@ public class FlowerFieldComp {
             }
         }
 
-        if (n != 1) {
-            dp[1][m] = field[1][m];
+        dp[1][n] = field[1][n];
 
-            for (int i = 1; i <= n; i++) {
-                for (int j = m - 1; j >= 0; j--) {
-                    dp[j][i] = field[j][i] + Math.max(dp[j + 1][i], dp[j][i - 1]);
-                }
+        for (int i = 1; i <= n; i++) {
+            for (int j = m - 1; j >= 0; j--) {
+                dp[j][i] = field[j][i] + Math.max(dp[j + 1][i], dp[j][i - 1]);
             }
-
-            System.out.println(dp[0][n]);
-        } else {
-            int sum = 0;
-            for (int i = 0; i < m; i++) {
-                sum += field[i][1];
-            }
-            System.out.println(sum);
         }
+
+        System.out.println(dp[0][n]);
+        StringBuilder res = new StringBuilder();
+        int is = n;
+        int js = 0;
+        for (int i = 0; i < n + m -2; i++) {
+            if (dp[js+1][is] > dp[js][is-1]) {
+                res.append("U");
+                js = js+1;
+            } else {
+                res.append("R");
+                is = is-1;
+            }
+        }
+        System.out.println(res.reverse().toString());
     }
 
 }

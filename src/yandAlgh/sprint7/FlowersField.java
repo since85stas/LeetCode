@@ -27,8 +27,7 @@ public class FlowersField {
             }
         }
 
-        if (n != 1 && m!=1) {
-            dp[1][m] = field[1][m];
+            dp[1][n] = field[1][n];
 
             for (int i = 1; i <= n; i++) {
                 for (int j = m - 1; j >= 0; j--) {
@@ -38,13 +37,7 @@ public class FlowersField {
 
             System.out.println(dp[0][n]);
 //            System.out.println(1);
-        } else {
-            int sum = 0;
-            for (int i = 0; i < m; i++) {
-                sum += field[i][1];
-            }
-            System.out.println(sum);
-        }
+
     }
 
 }
