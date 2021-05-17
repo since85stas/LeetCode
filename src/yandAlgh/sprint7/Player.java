@@ -192,10 +192,14 @@ class Game {
                 case Action.WAIT:
                     break;
                 case Action.COMPLETE:
-                    if (day <19) {
-                        action.score = 0;
+                    if (treesSizes.get(3) <= 3) {
+                        if (day < 19) {
+                            action.score = 0;
+                        } else {
+                            action.score = 5;
+                        }
                     } else {
-                        action.score = 5;
+                        action.score = 4;
                     }
                     break;
                 case Action.SEED:
@@ -203,7 +207,9 @@ class Game {
                     break;
                 case Action.GROW:
                     action.score = getCellByIndx(action.targetCellIdx).richness;
-                    action.score += getTreeById(action.targetCellIdx).size;
+                    if (day < 18 || getTreeById(action.targetCellIdx).size > 1) {
+                        action.score += getTreeById(action.targetCellIdx).size;
+                    }
                     if (getTreeById(action.targetCellIdx).size == getMinSize()) {
                         action.score += 1;
                     }
