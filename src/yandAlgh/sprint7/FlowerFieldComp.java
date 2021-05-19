@@ -23,6 +23,7 @@ public class FlowerFieldComp {
                     else field[i][j] = 0;
                 } else {
                     field[i][j] = Byte.MIN_VALUE;
+//                    dp[i][j] = Byte.MIN_VALUE;
                 }
             }
         }
@@ -35,6 +36,19 @@ public class FlowerFieldComp {
             }
         }
 
+        for (int i = 0; i < m+1; i++) {
+//            String string = reader.readLine();
+            for (int j = 0; j < n+1; j++) {
+                if ( i < m  && j > 0) {
+//                    if (string.charAt(j-1)==('1')) field[i][j] = 1;
+//                    else field[i][j] = 0;
+                } else {
+//                    field[i][j] = Byte.MIN_VALUE;
+                    dp[i][j] = Byte.MIN_VALUE;
+                }
+            }
+        }
+
         System.out.println(dp[0][n]);
         StringBuilder res = new StringBuilder();
         int is = n;
@@ -42,10 +56,12 @@ public class FlowerFieldComp {
         for (int i = 0; i < n + m -2; i++) {
             if (dp[js+1][is] > dp[js][is-1]) {
                 res.append("U");
+//                is = is-1;
                 js = js+1;
             } else {
                 res.append("R");
                 is = is-1;
+//                js = js+1;
             }
         }
         System.out.println(res.reverse().toString());

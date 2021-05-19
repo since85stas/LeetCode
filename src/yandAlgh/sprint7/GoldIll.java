@@ -12,16 +12,16 @@ public class GoldIll {
         long v = Long.parseLong(tokenizer.nextToken());
         tokenizer = new StringTokenizer(reader.readLine());
         int n = Integer.parseInt(tokenizer.nextToken());
-        int[] prices = new int[n];
-        int[] masses = new int[n];
+//        int[] prices = new int[n];
+////        int[] masses = new int[n];
         Ore[] ores = new Ore[n];
         for (int i = 0; i < n; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
             int p = Integer.parseInt(tokenizer.nextToken());
             int m = Integer.parseInt(tokenizer.nextToken());
 
-            masses[i] = m;
-            prices[i] = p;
+//            masses[i] = m;
+//            prices[i] = p;
             Ore ore = new Ore(m,p);
             ores[i] = ore;
         }
@@ -32,12 +32,13 @@ public class GoldIll {
         long price = 0;
         for (int i = 0; i < n; i++) {
             Ore ore = ores[i];
-            if (v-countV >= ore.mas) {
+            if (v-countV > ore.mas) {
                 countV +=ore.mas;
                 price += ore.price*ore.mas;
             } else {
                 price +=ore.price* (v-countV);
                 countV = v;
+                break;
             }
         }
 
@@ -47,18 +48,18 @@ public class GoldIll {
 
     private static class Ore implements Comparable<Ore> {
 
-        int mas;
-        int price;
+        long mas;
+        long price;
 
-        public Ore (int mas, int price) {
+        public Ore (long mas, long price) {
             this.price = price;
             this.mas = mas;
         }
 
         @Override
         public int compareTo(Ore ore) {
-            if (ore.price != price) return Integer.compare(ore.price, price);
-            else return Integer.compare(mas, ore.mas);
+            if (ore.price != price) return Long.compare(ore.price, price);
+            else return Long.compare(mas, ore.mas);
         }
     }
 
