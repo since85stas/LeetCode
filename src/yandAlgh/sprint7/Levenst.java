@@ -4,18 +4,23 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+/**
+ * <p>
+ * сложность алгоритма n*log(n)
+ * <p>
+ * успешная посылка https://contest.yandex.ru/contest/23815/run-report/49289745/
+ */
 public class Levenst {
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
-//        StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
         String s1 = reader.readLine();
         String s2 = reader.readLine();
 
         System.out.println(calculate(s1,s2));
     }
 
-    static int calculate(String x, String y) {
+    private static int calculate(String x, String y) {
         int[][] dp = new int[x.length() + 1][y.length() + 1];
         for (int i = 0; i <= x.length(); i++) {
             for (int j = 0; j <= y.length(); j++) {
@@ -31,15 +36,14 @@ public class Levenst {
         return dp[x.length()][y.length()];
     }
 
-    public static int costOfSubstitution(char a, char b) {
+    private static int costOfSubstitution(char a, char b) {
         return a == b ? 0 : 1;
     }
 
-    public static int min(int... numbers) {
-        return Arrays.stream(numbers).min().orElse(Integer.MAX_VALUE);
-    }
-
-    public static int minN(int n1, int n2, int n3) {
+    /**
+     * Возвращает минимум из 3 чисел
+     */
+    private  static int minN(int n1, int n2, int n3) {
         int min = n1;
         if (n2 < min) {
             min = n2;

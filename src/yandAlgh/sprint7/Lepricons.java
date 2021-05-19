@@ -11,10 +11,10 @@ public class Lepricons {
         short n = Short.parseShort(tokenizer.nextToken());
         short m = Short.parseShort(tokenizer.nextToken());
         tokenizer = new StringTokenizer(reader.readLine());
-        short[] prices = new short[n];
+        short[] c = new short[n];
         for (int i = 0; i < n; i++) {
             short p = Short.parseShort(tokenizer.nextToken());
-            prices[i] = p;
+            c[i] = p;
         }
 
         long sum = 0;
@@ -25,16 +25,16 @@ public class Lepricons {
             dp[i][0] = 0;
         }
         for (int i = 0; i < m; i++) {
-            if (i >= prices[0]) dp[0][i] = prices[0];
+            if (i >= c[0]) dp[0][i] = c[0];
         }
 
         for (int i = 1; i < n; i++) {
             for (int j = 1; j < m; j++) {
-                if (j >= prices[i] && j-i >=0) dp[i][j] = Math.max(dp[i-1][j],prices[i] + dp[i-1][j-i]);
-                else dp[i][j] = Math.max(dp[i-1][j],prices[i]);
+                if ( j-c[i] >=0) dp[i][j] = Math.max(dp[i-1][j],c[i] + dp[i-1][j-c[i]]);
+                else dp[i][j] = 0;
             }
+            System.out.println();
         }
-//        StringBuilder builder = new StringBuilder();
 
         System.out.println(dp[n-1][m-1]);
     }
