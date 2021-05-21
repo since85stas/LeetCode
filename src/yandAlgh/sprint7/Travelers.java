@@ -1,7 +1,6 @@
 package yandAlgh.sprint7;
 
 import java.io.*;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
