@@ -31,7 +31,7 @@ public class Levenst {
                     dp[i][j] = i;
                 } else {
                     // * Реккурентную формулу я брал из статьи, доказательство там достаточно нетривиальное)
-                    dp[i][j] = min3(dp[i - 1][j - 1] + costOfSubstitution(x.charAt(i - 1), y.charAt(j - 1)), dp[i - 1][j] + 1, dp[i][j - 1] + 1);
+                    dp[i][j] = min(dp[i - 1][j - 1] + costOfSubstitution(x.charAt(i - 1), y.charAt(j - 1)), dp[i - 1][j] + 1, dp[i][j - 1] + 1);
                 }
             }
         }
@@ -48,14 +48,7 @@ public class Levenst {
     /**
      * Возвращает минимум из 3 чисел
      */
-    private  static int min3(int n1, int n2, int n3) {
-        int min = n1;
-        if (n2 < min) {
-            min = n2;
-        }
-        if (n3 < min) {
-            min = n3;
-        }
-        return min;
+    private  static int min(int n1, int n2, int n3) {
+        return Math.min(n1, Math.min(n2,n3));
     }
 }
