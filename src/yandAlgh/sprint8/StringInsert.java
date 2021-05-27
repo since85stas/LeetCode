@@ -13,9 +13,6 @@ public class StringInsert {
         tokenizer = new StringTokenizer(reader.readLine());
         int n = Integer.parseInt(tokenizer.nextToken());
 
-//        int[] pos = new int[n];
-//        String[] strings = new String[n];
-//        Insert[] inserts = new Insert[n];
         TreeSet<Insert> inserts = new TreeSet<>();
 
         for (int i = 0; i < n; i++) {
