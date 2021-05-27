@@ -8,7 +8,7 @@ public class StringInsert {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input.txt"))));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-        StringBuilder s = new StringBuilder(tokenizer.nextToken());
+        String s = (tokenizer.nextToken());
 
         tokenizer = new StringTokenizer(reader.readLine());
         int n = Integer.parseInt(tokenizer.nextToken());
@@ -28,13 +28,18 @@ public class StringInsert {
 //        Arrays.sort(inserts);
         int offs = 0;
 
+        StringBuilder builder = new StringBuilder();
+
+        int start = 0;
         for (int i = 0; i < n; i++) {
             Insert insert = inserts.pollFirst();
-            s.insert(insert.start + offs, insert.str);
-            offs += insert.str.length;
+//            s.insert(insert.start + offs, insert.str);
+//            offs += insert.str.length;
+            builder.append(s, start, insert.start).append(insert.str);
+            start = insert.start;
         }
-
-        System.out.println(s.toString());
+        if (start < s.length() && start > 0) builder.append(s, start, s.length());
+        System.out.println(builder.toString());
     }
 
     private static class Insert implements Comparable<Insert>{
