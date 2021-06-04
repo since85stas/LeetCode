@@ -6,8 +6,9 @@ import java.util.*;
 public class Shrarg {
 
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input35.txt"))));
-        String s = reader.readLine();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("input4.txt"))));
+        StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+        String s = tokenizer.nextToken();
 
         StringTokenizer tokenizerStr = new StringTokenizer(reader.readLine());
         int n = Integer.parseInt(tokenizerStr.nextToken());
@@ -15,14 +16,16 @@ public class Shrarg {
         Trie trie = new Trie();
 
         for (int i = 0; i < n; i++) {
-            trie.put(reader.readLine(), i);
+            tokenizer = new StringTokenizer(reader.readLine());
+            trie.put(tokenizer.nextToken());
         }
 
         List<Integer> result = new ArrayList<>();
 
-        trie.testWord(s,0, result);
+        Boolean b = false;
+        boolean res =  trie.testWord(s,0,result);
 
-        if (result.size() == 0) System.out.println("NO");
+        if (!res) System.out.println("NO");
         else System.out.println("YES");
 
     }
@@ -35,26 +38,26 @@ public class Shrarg {
         private static final int R = 26;
         private Node root = new Node();
 
-        public void put(String key, int val)
-        { root = put(root, key, val, 0); }
+        public void put(String key)
+        { root = put(root, key,  0); }
 
-        private Node put(Node x, String key, int val, int d)
+        private Node put(Node x, String key, int d)
         {
             if (x == null) x = new Node();
-            if (d == key.length()) { x.value = val; return x; }
+            if (d == key.length()) { x.isEnd = true; return x; }
             char c = key.charAt(d);
-            x.next[c - 'a'] = put(x.next[c- 'a'], key, val, d+1);
+            x.next[c - 'a'] = put(x.next[c- 'a'], key, d+1);
             return x;
         }
 
         public boolean contains(String key)
-        { return get(key) != null; }
+        { return get(key).isEnd; }
 
-        public Integer get(String key)
+        public Node get(String key)
         {
             Node x = get(root, key, 0);
             if (x == null) return null;
-            return  x.value;
+            return  x;
         }
 
         private Node get(Node x, String key, int d)
@@ -67,14 +70,15 @@ public class Shrarg {
 
         private static class Node
         {
-            private Integer value;
+//            private Integer value;
             private Node[] next = new Node[R];
+            boolean isEnd;
         }
 
         private void collect(Node x, String prefix, Queue<String> q)
         {
             if (x == null) return;
-            if (x.value != null) q.add(prefix);
+            if (!x.isEnd) q.add(prefix);
             for (char c = 0; c < R; c++)
                 collect(x.next[c- 'a'], prefix + c, q);
         }
@@ -97,27 +101,64 @@ public class Shrarg {
             else return  x;
         }
 
-        public void testWord(String word, int index, List<Integer> result)
+        public boolean testWord(String word, int index, List<Integer> result)
         {
-            if (result.size() > 0) return;
+            if (result.size() > 0) return true;
             Node curr = root;
 
             for(int i=index; i<word.length();i++)
             {
                 if(curr.next[word.charAt(i)- 'a']==null)
-                    return;
-                if(curr.next[word.charAt(i)- 'a'].value !=null)
+                    return false;
+                if(curr.next[word.charAt(i)- 'a'].isEnd)
                 {
                     if(i==word.length()-1)
                     {
                         result.add((index));
-                        return;
+                        return true;
                     }
-                    testWord(word, i+1, result);
+                    if (result.size() == 0) testWord(word, i+1, result);
                 }
-                if (result.size() > 0) return;
+                if (result.size() > 0) return true;
                 curr = curr.next[word.charAt(i)- 'a'];
             }
+            return false;
+        }
+
+        public boolean testRoundTree(String word, int index, Boolean end) {
+            Node curr = root;
+            boolean res = false;
+            for(int i=index; i<word.length();i++)
+            {
+                if(curr.next[word.charAt(i)- 'a']==null) {
+                    end = false;
+                    return false;
+                }
+                if(curr.next[word.charAt(i)- 'a'].isEnd)
+                {
+                    if(i==word.length()-1)
+                    {
+//                        result.add((index));
+                        end = true;
+
+                        return true;
+                    }
+                    res = testRoundTree(word, i+1, end);
+                }
+//                if (result.size() > 0) return true;
+                curr = curr.next[word.charAt(i)- 'a'];
+            }
+            return end;
+        }
+
+        public boolean testDpc(String word, int index) {
+
+            boolean[] visit = new boolean[R];
+
+            for (int i = 0; i < word.length(); i++) {
+
+            }
+            return false;
         }
 
     }
