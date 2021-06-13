@@ -10,21 +10,22 @@ public class Tekkery {
     public static void main(String[] args) throws IOException {
 
 //        prepareText();
+//        long start = System.currentTimeMillis();
+//
+//        long end = System.currentTimeMillis();
+//        System.out.println("read in " + (end - start));
         long start = System.currentTimeMillis();
-        String[] mass = readPrepText("prep_text_part.txt");
+//        sortText(mass);
+        sortTenTimes();
         long end = System.currentTimeMillis();
-        System.out.println("read in " + (end - start));
-        start = System.currentTimeMillis();
-        sortText(mass);
-        end = System.currentTimeMillis();
-        System.out.println("sort in " + (end-start));
+        System.out.println("sort in " + (end-start)/10);
 
-        String[] massFull = readPrepText("prep_text.txt");
-        start = System.currentTimeMillis();
-        HashMap<String, Integer> dict = countWords(massFull);
-        outDict(dict);
-        end = System.currentTimeMillis();
-        System.out.println("count in " + (end - start));
+//        String[] massFull = readPrepText("prep_text.txt");
+//        start = System.currentTimeMillis();
+//        HashMap<String, Integer> dict = countWords(massFull);
+//        outDict(dict);
+//        end = System.currentTimeMillis();
+//        System.out.println("count in " + (end - start));
     }
 
     private static String[] readPrepText(String path) throws IOException {
@@ -40,6 +41,13 @@ public class Tekkery {
         return text;
     }
 
+    private static void sortTenTimes() throws IOException {
+        String[] mass = readPrepText("prep_text_part.txt");
+        for (int i = 0; i < 10; i++) {
+            sortText(mass);
+        }
+    }
+
     private static void sortText(String[] text) {
         for (int i = 0; i < text.length - 1; i++) {
             for (int j = i + 1; j < text.length; j++) {
@@ -50,7 +58,7 @@ public class Tekkery {
                 }
             }
         }
-//        System.out.println("");
+        System.out.println("");
     }
 
     private static HashMap<String, Integer> countWords(String[] text) {
