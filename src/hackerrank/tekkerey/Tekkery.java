@@ -1,7 +1,5 @@
 package hackerrank.tekkerey;
 
-import yandAlgh.sprint8.CaseB;
-
 import java.io.*;
 import java.util.*;
 
@@ -9,23 +7,25 @@ public class Tekkery {
 
     public static void main(String[] args) throws IOException {
 
-//        prepareText();
+        prepareText();
 //        long start = System.currentTimeMillis();
 //
 //        long end = System.currentTimeMillis();
 //        System.out.println("read in " + (end - start));
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
+//        String[] mass = readPrepText("prep_text_part.txt");
 //        sortText(mass);
-        sortTenTimes();
-        long end = System.currentTimeMillis();
-        System.out.println("sort in " + (end-start)/10);
+////        sortTenTimes();
+//        long end = System.currentTimeMillis();
+//        System.out.println("sort in " + (end-start)/10);
 
-//        String[] massFull = readPrepText("prep_text.txt");
-//        start = System.currentTimeMillis();
-//        HashMap<String, Integer> dict = countWords(massFull);
-//        outDict(dict);
-//        end = System.currentTimeMillis();
-//        System.out.println("count in " + (end - start));
+
+        long start = System.currentTimeMillis();
+        String[] massFull = readPrepText("prep_text.txt");
+        HashMap<String, Integer> dict = countWords(massFull);
+        outDict(dict);
+        long end = System.currentTimeMillis();
+        System.out.println("count in " + (end - start));
     }
 
     private static String[] readPrepText(String path) throws IOException {
@@ -37,13 +37,13 @@ public class Tekkery {
         for (int i = 0; i < count; i++) {
             text[i] = reader.readLine();
         }
-//        System.out.println();
         return text;
     }
 
     private static void sortTenTimes() throws IOException {
-        String[] mass = readPrepText("prep_text_part.txt");
+
         for (int i = 0; i < 10; i++) {
+            String[] mass = readPrepText("prep_text_part.txt");
             sortText(mass);
         }
     }
@@ -74,9 +74,10 @@ public class Tekkery {
         return dict;
     }
 
-    private static void outMostPop(String[] word) {
-        for (int i = 0; i < 20; i++) {
-            System.out.println(word[i]);
+
+    private static void outMostPop(String[] word, Integer[] numb) {
+        for (int i = 0; i < 30; i++) {
+            System.out.print(word[i] + " " + numb[i] + ",");
 //            System.out.println("\n");
         }
     }
@@ -97,7 +98,7 @@ public class Tekkery {
                 }
             }
         }
-        outMostPop(words);
+        outMostPop(words, numb);
     }
 
     private static void prepareText() throws IOException {
@@ -105,7 +106,7 @@ public class Tekkery {
         List<String> list = new ArrayList<>();
         int count = 0;
         for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-            StringTokenizer tokenizer = new StringTokenizer(line, " ,.;!?'\"()-");
+            StringTokenizer tokenizer = new StringTokenizer(line, " ,.;!?'\"()-”");
             while (tokenizer.hasMoreTokens()) {
                 String word = tokenizer.nextToken().toLowerCase();
                 if (
@@ -148,7 +149,41 @@ public class Tekkery {
                                 word.equals("from") ||
                                 word.equals("they") ||
                                 word.equals("there") ||
-                                word.equals("or")
+                                word.equals("who") ||
+                                word.equals("very") ||
+                                word.equals("been") ||
+                                word.equals("their") ||
+                                word.equals("one") ||
+                                word.equals("no") ||
+                                word.equals("me") ||
+                                word.equals("are") ||
+                                word.equals("if") ||
+                                word.equals("how") ||
+                                word.equals("them") ||
+                                word.equals("or") ||
+                                word.equals("would") ||
+                                word.equals("what") ||
+                                word.equals("we") ||
+                                word.equals("will") ||
+                                word.equals("upon") ||
+                                word.equals("could") ||
+                                word.equals("more") ||
+                                word.equals("did") ||
+                                word.equals("mr") ||
+                                word.equals("mrs") ||
+                                word.equals("up") ||
+                                word.equals("after") ||
+                                word.equals("your") ||
+                                word.equals("over") ||
+                                word.equals("made") ||
+                                word.equals("some") ||
+                                word.equals("never") ||
+                                word.equals("into") ||
+                                word.equals("has") ||
+                                word.equals("before") ||
+                                word.equals("day") ||
+                                word.equals("any") ||
+                                word.equals("sir")
                 ) {
 
                 } else {
